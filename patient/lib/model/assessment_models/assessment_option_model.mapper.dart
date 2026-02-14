@@ -69,9 +69,9 @@ mixin AssessmentOptionModelMappable {
   }
 
   AssessmentOptionModelCopyWith<AssessmentOptionModel, AssessmentOptionModel,
-          AssessmentOptionModel>
-      get copyWith => _AssessmentOptionModelCopyWithImpl(
-          this as AssessmentOptionModel, $identity, $identity);
+      AssessmentOptionModel> get copyWith => _AssessmentOptionModelCopyWithImpl<
+          AssessmentOptionModel, AssessmentOptionModel>(
+      this as AssessmentOptionModel, $identity, $identity);
   @override
   String toString() {
     return AssessmentOptionModelMapper.ensureInitialized()
@@ -94,8 +94,8 @@ mixin AssessmentOptionModelMappable {
 extension AssessmentOptionModelValueCopy<$R, $Out>
     on ObjectCopyWith<$R, AssessmentOptionModel, $Out> {
   AssessmentOptionModelCopyWith<$R, AssessmentOptionModel, $Out>
-      get $asAssessmentOptionModel =>
-          $base.as((v, t, t2) => _AssessmentOptionModelCopyWithImpl(v, t, t2));
+      get $asAssessmentOptionModel => $base.as(
+          (v, t, t2) => _AssessmentOptionModelCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class AssessmentOptionModelCopyWith<
@@ -131,5 +131,5 @@ class _AssessmentOptionModelCopyWithImpl<$R, $Out>
   @override
   AssessmentOptionModelCopyWith<$R2, AssessmentOptionModel, $Out2>
       $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-          _AssessmentOptionModelCopyWithImpl($value, $cast, t);
+          _AssessmentOptionModelCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

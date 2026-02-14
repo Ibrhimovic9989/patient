@@ -70,7 +70,8 @@ mixin AssessmentOptionEntityMappable {
 
   AssessmentOptionEntityCopyWith<AssessmentOptionEntity, AssessmentOptionEntity,
           AssessmentOptionEntity>
-      get copyWith => _AssessmentOptionEntityCopyWithImpl(
+      get copyWith => _AssessmentOptionEntityCopyWithImpl<
+              AssessmentOptionEntity, AssessmentOptionEntity>(
           this as AssessmentOptionEntity, $identity, $identity);
   @override
   String toString() {
@@ -94,8 +95,8 @@ mixin AssessmentOptionEntityMappable {
 extension AssessmentOptionEntityValueCopy<$R, $Out>
     on ObjectCopyWith<$R, AssessmentOptionEntity, $Out> {
   AssessmentOptionEntityCopyWith<$R, AssessmentOptionEntity, $Out>
-      get $asAssessmentOptionEntity =>
-          $base.as((v, t, t2) => _AssessmentOptionEntityCopyWithImpl(v, t, t2));
+      get $asAssessmentOptionEntity => $base.as((v, t, t2) =>
+          _AssessmentOptionEntityCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class AssessmentOptionEntityCopyWith<
@@ -132,5 +133,5 @@ class _AssessmentOptionEntityCopyWithImpl<$R, $Out>
   @override
   AssessmentOptionEntityCopyWith<$R2, AssessmentOptionEntity, $Out2>
       $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-          _AssessmentOptionEntityCopyWithImpl($value, $cast, t);
+          _AssessmentOptionEntityCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

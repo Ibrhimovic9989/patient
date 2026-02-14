@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:therapist/core/common/widgets/primary_button.dart';
+import 'package:therapist/core/utils/api_status_enum.dart';
 import 'package:therapist/presentation/widgets/snackbar_service.dart';
 import 'package:uuid/uuid.dart';
 
@@ -15,6 +16,7 @@ class AddActivitySetScreen extends StatefulWidget {
     this.activitySetId,
     this.activityName,
     this.activities,
+    this.activityInstructions,
     this.selectedWeekdays,
     this.startDate,
     this.endDate,
@@ -24,6 +26,7 @@ class AddActivitySetScreen extends StatefulWidget {
   final String? activitySetId;
   final String? activityName;
   final List<String>? activities;
+  final Map<String, String>? activityInstructions;
   final List<String>? selectedWeekdays;
   final DateTime? startDate;
   final DateTime? endDate;
@@ -39,6 +42,7 @@ class _AddActivitySetScreenState extends State<AddActivitySetScreen> {
   final _activityController = TextEditingController();
   
   List<String> activities = [];
+  Map<String, String> activityInstructions = {}; // Map of activity text to instructions
   List<String> selectedWeekdays = [];
   DateTime? startDate;
   DateTime? endDate;
@@ -62,6 +66,9 @@ class _AddActivitySetScreenState extends State<AddActivitySetScreen> {
     if (widget.activities != null) {
       activities = widget.activities!;
     }
+    if (widget.activityInstructions != null) {
+      activityInstructions = Map<String, String>.from(widget.activityInstructions!);
+    }
     if (widget.selectedWeekdays != null) {
       selectedWeekdays = widget.selectedWeekdays!;
     }
@@ -73,12 +80,34 @@ class _AddActivitySetScreenState extends State<AddActivitySetScreen> {
     }
   }
 
-  void _saveActivitySet() {
+  Future<void> _saveActivitySet() async {
+    // Build activity list with instructions and instructions map
+    final activityList = <DailyActivityModel>[];
+    final instructionsMap = <String, String>{};
+    
+    for (final activityText in activities) {
+      final activityId = const Uuid().v4();
+      final instruction = activityInstructions[activityText];
+      
+      activityList.add(DailyActivityModel(
+        id: activityId,
+        activity: activityText,
+        isCompleted: false,
+        instructions: instruction,
+      ));
+      
+      // Also store in instructions map for JSONB field
+      if (instruction != null && instruction.isNotEmpty) {
+        instructionsMap[activityId] = instruction;
+      }
+    }
+    
     final activitySet = DailyActivityResponseModel(
       id: widget.activitySetId ?? '',
       createdAt: DateTime.now().toIso8601String(),
       activityName: _activitySetNameController.text,
-      activityList: activities.map((e) => DailyActivityModel(id: const Uuid().v4(), activity: e, isCompleted: false)).toList(),
+      activityList: activityList,
+      instructions: instructionsMap.isNotEmpty ? instructionsMap : null,
       isActive: true,
       patientId: widget.patientId,
       therapistId: '',
@@ -94,7 +123,18 @@ class _AddActivitySetScreenState extends State<AddActivitySetScreen> {
         return days;
       })(),
     );
-    context.read<DailyActivitiesProvider>().addOrUpdateActivitySet(activitySet);
+    await context.read<DailyActivitiesProvider>().addOrUpdateActivitySet(
+      activitySet,
+      patientId: widget.patientId,
+    );
+    
+    // Check for errors and show message
+    final provider = context.read<DailyActivitiesProvider>();
+    if (provider.addActivitySetStatus == ApiStatus.failure) {
+      SnackbarService.showError(
+        provider.errorMessage ?? 'Failed to save activity set'
+      );
+    }
   }
 
   @override
@@ -115,6 +155,8 @@ class _AddActivitySetScreenState extends State<AddActivitySetScreen> {
 
   void _removeActivity(int index) {
     setState(() {
+      final activityText = activities[index];
+      activityInstructions.remove(activityText);
       activities.removeAt(index);
     });
   }
@@ -129,18 +171,23 @@ class _AddActivitySetScreenState extends State<AddActivitySetScreen> {
     });
   }
 
-  void _validateActivitySet() {
+  Future<void> _validateActivitySet() async {
     if (_formKey.currentState!.validate() &&
         activities.isNotEmpty &&
         selectedWeekdays.isNotEmpty &&
         startDate != null &&
         endDate != null &&
         !endDate!.isBefore(startDate!)) {
-      _saveActivitySet();
-      Future.delayed(const Duration(milliseconds: 200), () {
+      await _saveActivitySet();
+      
+      // Only proceed if save was successful
+      final provider = context.read<DailyActivitiesProvider>();
+      if (provider.addActivitySetStatus == ApiStatus.success) {
         widget.onSave();
-      });
-      Navigator.pop(context);
+        if (mounted) {
+          Navigator.pop(context);
+        }
+      }
     } else {
       String errorMsg = 'Please fill all required fields';
       if (startDate == null || endDate == null) {
@@ -301,12 +348,47 @@ class _AddActivitySetScreenState extends State<AddActivitySetScreen> {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: activities.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(activities[index]),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => _removeActivity(index),
+                final activityText = activities[index];
+                final hasInstructions = activityInstructions.containsKey(activityText) && 
+                    activityInstructions[activityText]!.isNotEmpty;
+                return ExpansionTile(
+                  title: Text(activityText),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (hasInstructions)
+                        const Icon(Icons.info_outline, color: Colors.blue, size: 20),
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => _removeActivity(index),
+                      ),
+                    ],
                   ),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'Instructions (optional)',
+                          hintText: 'Add detailed instructions for this activity...',
+                          border: OutlineInputBorder(),
+                        ),
+                        maxLines: 3,
+                        onChanged: (value) {
+                          setState(() {
+                            if (value.isEmpty) {
+                              activityInstructions.remove(activityText);
+                            } else {
+                              activityInstructions[activityText] = value;
+                            }
+                          });
+                        },
+                        controller: TextEditingController(
+                          text: activityInstructions[activityText] ?? '',
+                        ),
+                      ),
+                    ),
+                  ],
                 );
               },
             ),

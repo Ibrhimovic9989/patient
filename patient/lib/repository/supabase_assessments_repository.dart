@@ -27,8 +27,10 @@ print('Response: $response');
   Future<ActionResult> fetchAllAssessments() async {
     try {
       final response = await _supabase.from('assessments').select('*');
-      final data =
-          response.map((e) => AssessmentEntityMapper.fromMap(e)).toList();
+      // imageUrl is now nullable, so null values are handled correctly
+      final data = response
+          .map((e) => AssessmentEntityMapper.fromMap(e))
+          .toList();
       return ActionResultSuccess(
           data: data.map((e) => e.toModel()).toList(), statusCode: 200);
     } catch (e) {

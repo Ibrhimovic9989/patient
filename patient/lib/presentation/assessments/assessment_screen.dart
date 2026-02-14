@@ -3,6 +3,7 @@ import 'package:patient/core/core.dart';
 import 'package:patient/core/theme/theme.dart';
 import 'package:patient/model/assessment_models/assessment_models.dart';
 import 'package:patient/presentation/auth/consultation_request_screen.dart';
+import 'package:patient/presentation/assessments/package_selection_screen.dart';
 import 'package:patient/presentation/widgets/snackbar_service.dart';
 import 'package:patient/provider/assessment_provider.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +38,7 @@ class AssessmentScreenState extends State<AssessmentScreen> {
             '${assessmentProvider.assessmentResultModel?.message}');
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => const ConsultationRequestScreen(),
+            builder: (context) => const PackageSelectionScreen(),
           ),
         );
       } else if (assessmentProvider.submitAssessmentStatus.isFailure) {

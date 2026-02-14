@@ -27,7 +27,12 @@ abstract interface class PatientRepository {
 
   Future<ActionResult> getTherapyGoals({
     required DateTime date,
+    String? therapyTypeId,
   });
+  
+  Future<ActionResult> getTherapyTypesForPackage();
+  
+  Future<ActionResult> getAppointmentsForDate(DateTime date);
   /// Fetches all appointments from the `session` table.
   ///
   /// This method fetches all appointments from the `session` table using Supabase.
@@ -81,7 +86,9 @@ abstract interface class PatientRepository {
   ///
   /// - **Parameters:**
   ///   - `tasks` : A list of [PatientTaskModel] objects containing the activities to be updated.
-  ///
+  ///   - `activityId` : The ID of the activity log entry to update.
+  ///   - `activitySetId` : The ID of the activity set.
+  ///   - `date` : The date for which the activities are being updated (optional, defaults to today).
 
   /// - **Returns:**
   ///   - A [Future] of [ActionResult], which can either be:
@@ -94,6 +101,28 @@ abstract interface class PatientRepository {
     required List<PatientTaskModel> tasks,
     String? activityId,
     String? activitySetId,
+    DateTime? date,
+  });
+
+  /// Saves a note for a specific activity.
+  ///
+  /// This method saves a parent note for a specific activity in the daily_activity_logs table.
+  ///
+  /// - **Parameters:**
+  ///   - `activityId`: The ID of the activity item.
+  ///   - `activitySetId`: The ID of the activity set.
+  ///   - `note`: The note text to save.
+  ///   - `date`: The date for which the note is being saved.
+  ///
+  /// - **Returns:**
+  ///   - A [Future] of [ActionResult], which can either be:
+  ///     - [ActionResultSuccess] with a success message and status code `200` if the note is successfully saved.
+  ///     - [ActionResultFailure] with an error message and status code `500` if an exception occurs.
+  Future<ActionResult> saveActivityNote({
+    required String activityId,
+    required String activitySetId,
+    required String note,
+    required DateTime date,
   });
 
   /// Fetches the reports for the given date.
@@ -114,5 +143,50 @@ abstract interface class PatientRepository {
   Future<ActionResult> getReports({
     required DateTime date,
   });
+
+  /// Get progress metrics for a date range
+  /// 
+  /// Returns progress metrics including goals achieved, observations count, regressions count, attendance rate
+  /// 
+  /// - **Parameters:**
+  ///   - `startDate`: Optional start date for the range (defaults to 30 days ago)
+  ///   - `endDate`: Optional end date for the range (defaults to today)
+  ///   - `therapyTypeId`: Optional therapy type filter
+  /// 
+  /// - **Returns:**
+  ///   - [ActionResultSuccess] with progress metrics data
+  ///   - [ActionResultFailure] if an error occurs
+  Future<ActionResult> getProgressMetrics({
+    DateTime? startDate,
+    DateTime? endDate,
+    String? therapyTypeId,
+  });
+
+  /// Get historical trends for therapy goals
+  /// 
+  /// Returns therapy goals data grouped by date for chart visualization
+  /// 
+  /// - **Parameters:**
+  ///   - `startDate`: Start date for the range (required)
+  ///   - `endDate`: End date for the range (required)
+  ///   - `therapyTypeId`: Optional therapy type filter
+  /// 
+  /// - **Returns:**
+  ///   - [ActionResultSuccess] with historical trends data
+  ///   - [ActionResultFailure] if an error occurs
+  Future<ActionResult> getHistoricalTrends({
+    required DateTime startDate,
+    required DateTime endDate,
+    String? therapyTypeId,
+  });
+
+  /// Analyze milestones using AI
+  /// 
+  /// Analyzes therapy goals and daily activities to generate milestone insights
+  /// 
+  /// - **Returns:**
+  ///   - [ActionResultSuccess] with milestone analysis data
+  ///   - [ActionResultFailure] if an error occurs
+  Future<ActionResult> analyzeMilestones();
  
 }

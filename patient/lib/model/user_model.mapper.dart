@@ -56,7 +56,8 @@ mixin UserModelMappable {
   }
 
   UserModelCopyWith<UserModel, UserModel, UserModel> get copyWith =>
-      _UserModelCopyWithImpl(this as UserModel, $identity, $identity);
+      _UserModelCopyWithImpl<UserModel, UserModel>(
+          this as UserModel, $identity, $identity);
   @override
   String toString() {
     return UserModelMapper.ensureInitialized()
@@ -77,7 +78,7 @@ mixin UserModelMappable {
 
 extension UserModelValueCopy<$R, $Out> on ObjectCopyWith<$R, UserModel, $Out> {
   UserModelCopyWith<$R, UserModel, $Out> get $asUserModel =>
-      $base.as((v, t, t2) => _UserModelCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _UserModelCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class UserModelCopyWith<$R, $In extends UserModel, $Out>
@@ -103,5 +104,5 @@ class _UserModelCopyWithImpl<$R, $Out>
   @override
   UserModelCopyWith<$R2, UserModel, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _UserModelCopyWithImpl($value, $cast, t);
+      _UserModelCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

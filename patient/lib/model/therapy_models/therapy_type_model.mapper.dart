@@ -72,8 +72,9 @@ mixin TherapyTypeModelMappable {
   }
 
   TherapyTypeModelCopyWith<TherapyTypeModel, TherapyTypeModel, TherapyTypeModel>
-      get copyWith => _TherapyTypeModelCopyWithImpl(
-          this as TherapyTypeModel, $identity, $identity);
+      get copyWith =>
+          _TherapyTypeModelCopyWithImpl<TherapyTypeModel, TherapyTypeModel>(
+              this as TherapyTypeModel, $identity, $identity);
   @override
   String toString() {
     return TherapyTypeModelMapper.ensureInitialized()
@@ -96,8 +97,8 @@ mixin TherapyTypeModelMappable {
 extension TherapyTypeModelValueCopy<$R, $Out>
     on ObjectCopyWith<$R, TherapyTypeModel, $Out> {
   TherapyTypeModelCopyWith<$R, TherapyTypeModel, $Out>
-      get $asTherapyTypeModel =>
-          $base.as((v, t, t2) => _TherapyTypeModelCopyWithImpl(v, t, t2));
+      get $asTherapyTypeModel => $base
+          .as((v, t, t2) => _TherapyTypeModelCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class TherapyTypeModelCopyWith<$R, $In extends TherapyTypeModel, $Out>
@@ -141,5 +142,5 @@ class _TherapyTypeModelCopyWithImpl<$R, $Out>
   @override
   TherapyTypeModelCopyWith<$R2, TherapyTypeModel, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _TherapyTypeModelCopyWithImpl($value, $cast, t);
+      _TherapyTypeModelCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

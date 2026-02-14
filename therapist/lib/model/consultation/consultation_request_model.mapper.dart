@@ -1,6 +1,8 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
+// ignore_for_file: invalid_use_of_protected_member
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
 
@@ -13,8 +15,9 @@ class ConsultationRequestModelMapper
   static ConsultationRequestModelMapper? _instance;
   static ConsultationRequestModelMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals
-          .use(_instance = ConsultationRequestModelMapper._());
+      MapperContainer.globals.use(
+        _instance = ConsultationRequestModelMapper._(),
+      );
     }
     return _instance!;
   }
@@ -23,41 +26,76 @@ class ConsultationRequestModelMapper
   final String id = 'ConsultationRequestModel';
 
   static String _$id(ConsultationRequestModel v) => v.id;
-  static const Field<ConsultationRequestModel, String> _f$id =
-      Field('id', _$id);
+  static const Field<ConsultationRequestModel, String> _f$id = Field(
+    'id',
+    _$id,
+  );
   static String _$patientName(ConsultationRequestModel v) => v.patientName;
-  static const Field<ConsultationRequestModel, String> _f$patientName =
-      Field('patientName', _$patientName, key: r'patient_name');
+  static const Field<ConsultationRequestModel, String> _f$patientName = Field(
+    'patientName',
+    _$patientName,
+    key: r'patient_name',
+  );
   static String? _$timestamp(ConsultationRequestModel v) => v.timestamp;
-  static const Field<ConsultationRequestModel, String> _f$timestamp =
-      Field('timestamp', _$timestamp, opt: true);
+  static const Field<ConsultationRequestModel, String> _f$timestamp = Field(
+    'timestamp',
+    _$timestamp,
+    opt: true,
+  );
   static String? _$therapistId(ConsultationRequestModel v) => v.therapistId;
-  static const Field<ConsultationRequestModel, String> _f$therapistId =
-      Field('therapistId', _$therapistId, key: r'therapist_id', opt: true);
+  static const Field<ConsultationRequestModel, String> _f$therapistId = Field(
+    'therapistId',
+    _$therapistId,
+    key: r'therapist_id',
+    opt: true,
+  );
   static String? _$patientId(ConsultationRequestModel v) => v.patientId;
-  static const Field<ConsultationRequestModel, String> _f$patientId =
-      Field('patientId', _$patientId, key: r'patient_id', opt: true);
+  static const Field<ConsultationRequestModel, String> _f$patientId = Field(
+    'patientId',
+    _$patientId,
+    key: r'patient_id',
+    opt: true,
+  );
   static bool? _$isConsultation(ConsultationRequestModel v) => v.isConsultation;
   static const Field<ConsultationRequestModel, bool> _f$isConsultation = Field(
-      'isConsultation', _$isConsultation,
-      key: r'is_consultation', opt: true);
+    'isConsultation',
+    _$isConsultation,
+    key: r'is_consultation',
+    opt: true,
+  );
   static int? _$mode(ConsultationRequestModel v) => v.mode;
-  static const Field<ConsultationRequestModel, int> _f$mode =
-      Field('mode', _$mode, opt: true);
+  static const Field<ConsultationRequestModel, int> _f$mode = Field(
+    'mode',
+    _$mode,
+    opt: true,
+  );
   static int? _$duration(ConsultationRequestModel v) => v.duration;
-  static const Field<ConsultationRequestModel, int> _f$duration =
-      Field('duration', _$duration, opt: true);
+  static const Field<ConsultationRequestModel, int> _f$duration = Field(
+    'duration',
+    _$duration,
+    opt: true,
+  );
   static String? _$name(ConsultationRequestModel v) => v.name;
-  static const Field<ConsultationRequestModel, String> _f$name =
-      Field('name', _$name, opt: true);
+  static const Field<ConsultationRequestModel, String> _f$name = Field(
+    'name',
+    _$name,
+    opt: true,
+  );
   static String? _$status(ConsultationRequestModel v) => v.status;
-  static const Field<ConsultationRequestModel, String> _f$status =
-      Field('status', _$status, opt: true);
+  static const Field<ConsultationRequestModel, String> _f$status = Field(
+    'status',
+    _$status,
+    opt: true,
+  );
   static String? _$declinedReason(ConsultationRequestModel v) =>
       v.declinedReason;
   static const Field<ConsultationRequestModel, String> _f$declinedReason =
-      Field('declinedReason', _$declinedReason,
-          key: r'declined_reason', opt: true);
+      Field(
+        'declinedReason',
+        _$declinedReason,
+        key: r'declined_reason',
+        opt: true,
+      );
 
   @override
   final MappableFields<ConsultationRequestModel> fields = const {
@@ -76,17 +114,18 @@ class ConsultationRequestModelMapper
 
   static ConsultationRequestModel _instantiate(DecodingData data) {
     return ConsultationRequestModel(
-        id: data.dec(_f$id),
-        patientName: data.dec(_f$patientName),
-        timestamp: data.dec(_f$timestamp),
-        therapistId: data.dec(_f$therapistId),
-        patientId: data.dec(_f$patientId),
-        isConsultation: data.dec(_f$isConsultation),
-        mode: data.dec(_f$mode),
-        duration: data.dec(_f$duration),
-        name: data.dec(_f$name),
-        status: data.dec(_f$status),
-        declinedReason: data.dec(_f$declinedReason));
+      id: data.dec(_f$id),
+      patientName: data.dec(_f$patientName),
+      timestamp: data.dec(_f$timestamp),
+      therapistId: data.dec(_f$therapistId),
+      patientId: data.dec(_f$patientId),
+      isConsultation: data.dec(_f$isConsultation),
+      mode: data.dec(_f$mode),
+      duration: data.dec(_f$duration),
+      name: data.dec(_f$name),
+      status: data.dec(_f$status),
+      declinedReason: data.dec(_f$declinedReason),
+    );
   }
 
   @override
@@ -112,55 +151,69 @@ mixin ConsultationRequestModelMappable {
         .encodeMap<ConsultationRequestModel>(this as ConsultationRequestModel);
   }
 
-  ConsultationRequestModelCopyWith<ConsultationRequestModel,
-          ConsultationRequestModel, ConsultationRequestModel>
-      get copyWith => _ConsultationRequestModelCopyWithImpl<
-              ConsultationRequestModel, ConsultationRequestModel>(
-          this as ConsultationRequestModel, $identity, $identity);
+  ConsultationRequestModelCopyWith<
+    ConsultationRequestModel,
+    ConsultationRequestModel,
+    ConsultationRequestModel
+  >
+  get copyWith =>
+      _ConsultationRequestModelCopyWithImpl<
+        ConsultationRequestModel,
+        ConsultationRequestModel
+      >(this as ConsultationRequestModel, $identity, $identity);
   @override
   String toString() {
-    return ConsultationRequestModelMapper.ensureInitialized()
-        .stringifyValue(this as ConsultationRequestModel);
+    return ConsultationRequestModelMapper.ensureInitialized().stringifyValue(
+      this as ConsultationRequestModel,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return ConsultationRequestModelMapper.ensureInitialized()
-        .equalsValue(this as ConsultationRequestModel, other);
+    return ConsultationRequestModelMapper.ensureInitialized().equalsValue(
+      this as ConsultationRequestModel,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return ConsultationRequestModelMapper.ensureInitialized()
-        .hashValue(this as ConsultationRequestModel);
+    return ConsultationRequestModelMapper.ensureInitialized().hashValue(
+      this as ConsultationRequestModel,
+    );
   }
 }
 
 extension ConsultationRequestModelValueCopy<$R, $Out>
     on ObjectCopyWith<$R, ConsultationRequestModel, $Out> {
   ConsultationRequestModelCopyWith<$R, ConsultationRequestModel, $Out>
-      get $asConsultationRequestModel => $base.as((v, t, t2) =>
-          _ConsultationRequestModelCopyWithImpl<$R, $Out>(v, t, t2));
+  get $asConsultationRequestModel => $base.as(
+    (v, t, t2) => _ConsultationRequestModelCopyWithImpl<$R, $Out>(v, t, t2),
+  );
 }
 
 abstract class ConsultationRequestModelCopyWith<
-    $R,
-    $In extends ConsultationRequestModel,
-    $Out> implements ClassCopyWith<$R, $In, $Out> {
-  $R call(
-      {String? id,
-      String? patientName,
-      String? timestamp,
-      String? therapistId,
-      String? patientId,
-      bool? isConsultation,
-      int? mode,
-      int? duration,
-      String? name,
-      String? status,
-      String? declinedReason});
+  $R,
+  $In extends ConsultationRequestModel,
+  $Out
+>
+    implements ClassCopyWith<$R, $In, $Out> {
+  $R call({
+    String? id,
+    String? patientName,
+    String? timestamp,
+    String? therapistId,
+    String? patientId,
+    bool? isConsultation,
+    int? mode,
+    int? duration,
+    String? name,
+    String? status,
+    String? declinedReason,
+  });
   ConsultationRequestModelCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-      Then<$Out2, $R2> t);
+    Then<$Out2, $R2> t,
+  );
 }
 
 class _ConsultationRequestModelCopyWithImpl<$R, $Out>
@@ -173,47 +226,51 @@ class _ConsultationRequestModelCopyWithImpl<$R, $Out>
   late final ClassMapperBase<ConsultationRequestModel> $mapper =
       ConsultationRequestModelMapper.ensureInitialized();
   @override
-  $R call(
-          {String? id,
-          String? patientName,
-          Object? timestamp = $none,
-          Object? therapistId = $none,
-          Object? patientId = $none,
-          Object? isConsultation = $none,
-          Object? mode = $none,
-          Object? duration = $none,
-          Object? name = $none,
-          Object? status = $none,
-          Object? declinedReason = $none}) =>
-      $apply(FieldCopyWithData({
-        if (id != null) #id: id,
-        if (patientName != null) #patientName: patientName,
-        if (timestamp != $none) #timestamp: timestamp,
-        if (therapistId != $none) #therapistId: therapistId,
-        if (patientId != $none) #patientId: patientId,
-        if (isConsultation != $none) #isConsultation: isConsultation,
-        if (mode != $none) #mode: mode,
-        if (duration != $none) #duration: duration,
-        if (name != $none) #name: name,
-        if (status != $none) #status: status,
-        if (declinedReason != $none) #declinedReason: declinedReason
-      }));
+  $R call({
+    String? id,
+    String? patientName,
+    Object? timestamp = $none,
+    Object? therapistId = $none,
+    Object? patientId = $none,
+    Object? isConsultation = $none,
+    Object? mode = $none,
+    Object? duration = $none,
+    Object? name = $none,
+    Object? status = $none,
+    Object? declinedReason = $none,
+  }) => $apply(
+    FieldCopyWithData({
+      if (id != null) #id: id,
+      if (patientName != null) #patientName: patientName,
+      if (timestamp != $none) #timestamp: timestamp,
+      if (therapistId != $none) #therapistId: therapistId,
+      if (patientId != $none) #patientId: patientId,
+      if (isConsultation != $none) #isConsultation: isConsultation,
+      if (mode != $none) #mode: mode,
+      if (duration != $none) #duration: duration,
+      if (name != $none) #name: name,
+      if (status != $none) #status: status,
+      if (declinedReason != $none) #declinedReason: declinedReason,
+    }),
+  );
   @override
   ConsultationRequestModel $make(CopyWithData data) => ConsultationRequestModel(
-      id: data.get(#id, or: $value.id),
-      patientName: data.get(#patientName, or: $value.patientName),
-      timestamp: data.get(#timestamp, or: $value.timestamp),
-      therapistId: data.get(#therapistId, or: $value.therapistId),
-      patientId: data.get(#patientId, or: $value.patientId),
-      isConsultation: data.get(#isConsultation, or: $value.isConsultation),
-      mode: data.get(#mode, or: $value.mode),
-      duration: data.get(#duration, or: $value.duration),
-      name: data.get(#name, or: $value.name),
-      status: data.get(#status, or: $value.status),
-      declinedReason: data.get(#declinedReason, or: $value.declinedReason));
+    id: data.get(#id, or: $value.id),
+    patientName: data.get(#patientName, or: $value.patientName),
+    timestamp: data.get(#timestamp, or: $value.timestamp),
+    therapistId: data.get(#therapistId, or: $value.therapistId),
+    patientId: data.get(#patientId, or: $value.patientId),
+    isConsultation: data.get(#isConsultation, or: $value.isConsultation),
+    mode: data.get(#mode, or: $value.mode),
+    duration: data.get(#duration, or: $value.duration),
+    name: data.get(#name, or: $value.name),
+    status: data.get(#status, or: $value.status),
+    declinedReason: data.get(#declinedReason, or: $value.declinedReason),
+  );
 
   @override
   ConsultationRequestModelCopyWith<$R2, ConsultationRequestModel, $Out2>
-      $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-          _ConsultationRequestModelCopyWithImpl<$R2, $Out2>($value, $cast, t);
+  $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _ConsultationRequestModelCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

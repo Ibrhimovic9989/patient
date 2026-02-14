@@ -69,8 +69,9 @@ mixin PatientTaskEntityMappable {
 
   PatientTaskEntityCopyWith<PatientTaskEntity, PatientTaskEntity,
           PatientTaskEntity>
-      get copyWith => _PatientTaskEntityCopyWithImpl(
-          this as PatientTaskEntity, $identity, $identity);
+      get copyWith =>
+          _PatientTaskEntityCopyWithImpl<PatientTaskEntity, PatientTaskEntity>(
+              this as PatientTaskEntity, $identity, $identity);
   @override
   String toString() {
     return PatientTaskEntityMapper.ensureInitialized()
@@ -93,8 +94,8 @@ mixin PatientTaskEntityMappable {
 extension PatientTaskEntityValueCopy<$R, $Out>
     on ObjectCopyWith<$R, PatientTaskEntity, $Out> {
   PatientTaskEntityCopyWith<$R, PatientTaskEntity, $Out>
-      get $asPatientTaskEntity =>
-          $base.as((v, t, t2) => _PatientTaskEntityCopyWithImpl(v, t, t2));
+      get $asPatientTaskEntity => $base
+          .as((v, t, t2) => _PatientTaskEntityCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class PatientTaskEntityCopyWith<$R, $In extends PatientTaskEntity,
@@ -128,5 +129,5 @@ class _PatientTaskEntityCopyWithImpl<$R, $Out>
   @override
   PatientTaskEntityCopyWith<$R2, PatientTaskEntity, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _PatientTaskEntityCopyWithImpl($value, $cast, t);
+      _PatientTaskEntityCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

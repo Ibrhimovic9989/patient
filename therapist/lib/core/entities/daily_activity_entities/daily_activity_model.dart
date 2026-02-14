@@ -14,9 +14,13 @@ class DailyActivityModel with DailyActivityModelMappable {
   @MappableField(key: 'is_completed')
   final bool isCompleted;
 
+  @MappableField(key: 'instructions')
+  final String? instructions;
+
   DailyActivityModel({
     required this.id,
     required this.activity,
     required this.isCompleted,
+    this.instructions,
   });
 }

@@ -7,6 +7,7 @@ import '../../core/entities/auth_entities/therapist_personal_info_entity.dart';
 import '../../provider/auth_provider.dart';
 import '../../provider/therapist_provider.dart';
 import '../home/home_screen.dart';
+import 'clinic_selection_screen.dart';
 
 class PersonalDetailsScreen extends StatefulWidget {
   const PersonalDetailsScreen({super.key});
@@ -97,24 +98,24 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                       gender: selectedGender,
                       professionId: selectedProfessionId!,
                       professionName: selectedProfessionName!,
-                      regulatoryBody: selectedRegulatoryBody!,
-                      licenseNumber: licenseController.text,
+                      regulatoryBody: selectedRegulatoryBody?.isNotEmpty == true ? selectedRegulatoryBody : null,
+                      licenseNumber: licenseController.text.isNotEmpty ? licenseController.text : null,
                       specialization: selectedSpecialization!,
                       therapies: selectedTherapies,
                       id: authProvider.userId!,
-                      startAvailabilityTime: selectedAvailabilityStartTime!,
-                      endAvailabilityTime: selectedAvailabilityEndTime!,
+                      startAvailabilityTime: selectedAvailabilityStartTime?.isNotEmpty == true ? selectedAvailabilityStartTime : null,
+                      endAvailabilityTime: selectedAvailabilityEndTime?.isNotEmpty == true ? selectedAvailabilityEndTime : null,
                     );
 
                     // Save to Supabase
                     final success = await authProvider.storePersonalInfo(personalInfo);
 
                     if (success) {
-                      // Navigate to home screen
+                      // Navigate to clinic selection screen
                       if (mounted) {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (context) => const HomeScreen(),
+                            builder: (context) => const ClinicSelectionScreen(),
                           ),
                         );
                       }

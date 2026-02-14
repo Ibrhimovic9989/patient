@@ -1,6 +1,8 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
+// ignore_for_file: invalid_use_of_protected_member
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
 
@@ -49,40 +51,50 @@ class TherapyModelMapper extends ClassMapperBase<TherapyModel> {
 
 mixin TherapyModelMappable {
   String toJson() {
-    return TherapyModelMapper.ensureInitialized()
-        .encodeJson<TherapyModel>(this as TherapyModel);
+    return TherapyModelMapper.ensureInitialized().encodeJson<TherapyModel>(
+      this as TherapyModel,
+    );
   }
 
   Map<String, dynamic> toMap() {
-    return TherapyModelMapper.ensureInitialized()
-        .encodeMap<TherapyModel>(this as TherapyModel);
+    return TherapyModelMapper.ensureInitialized().encodeMap<TherapyModel>(
+      this as TherapyModel,
+    );
   }
 
   TherapyModelCopyWith<TherapyModel, TherapyModel, TherapyModel> get copyWith =>
-      _TherapyModelCopyWithImpl(this as TherapyModel, $identity, $identity);
+      _TherapyModelCopyWithImpl<TherapyModel, TherapyModel>(
+        this as TherapyModel,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
-    return TherapyModelMapper.ensureInitialized()
-        .stringifyValue(this as TherapyModel);
+    return TherapyModelMapper.ensureInitialized().stringifyValue(
+      this as TherapyModel,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return TherapyModelMapper.ensureInitialized()
-        .equalsValue(this as TherapyModel, other);
+    return TherapyModelMapper.ensureInitialized().equalsValue(
+      this as TherapyModel,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return TherapyModelMapper.ensureInitialized()
-        .hashValue(this as TherapyModel);
+    return TherapyModelMapper.ensureInitialized().hashValue(
+      this as TherapyModel,
+    );
   }
 }
 
 extension TherapyModelValueCopy<$R, $Out>
     on ObjectCopyWith<$R, TherapyModel, $Out> {
   TherapyModelCopyWith<$R, TherapyModel, $Out> get $asTherapyModel =>
-      $base.as((v, t, t2) => _TherapyModelCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _TherapyModelCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class TherapyModelCopyWith<$R, $In extends TherapyModel, $Out>
@@ -100,14 +112,18 @@ class _TherapyModelCopyWithImpl<$R, $Out>
   late final ClassMapperBase<TherapyModel> $mapper =
       TherapyModelMapper.ensureInitialized();
   @override
-  $R call({String? id, String? name}) => $apply(FieldCopyWithData(
-      {if (id != null) #id: id, if (name != null) #name: name}));
+  $R call({String? id, String? name}) => $apply(
+    FieldCopyWithData({if (id != null) #id: id, if (name != null) #name: name}),
+  );
   @override
   TherapyModel $make(CopyWithData data) => TherapyModel(
-      id: data.get(#id, or: $value.id), name: data.get(#name, or: $value.name));
+    id: data.get(#id, or: $value.id),
+    name: data.get(#name, or: $value.name),
+  );
 
   @override
   TherapyModelCopyWith<$R2, TherapyModel, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _TherapyModelCopyWithImpl($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _TherapyModelCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

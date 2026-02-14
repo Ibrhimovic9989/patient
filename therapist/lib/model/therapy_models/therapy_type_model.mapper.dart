@@ -1,6 +1,8 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 // ignore_for_file: type=lint
+// ignore_for_file: invalid_use_of_protected_member
 // ignore_for_file: unused_element, unnecessary_cast, override_on_non_overriding_member
 // ignore_for_file: strict_raw_type, inference_failure_on_untyped_parameter
 
@@ -21,16 +23,24 @@ class TherapyTypeModelMapper extends ClassMapperBase<TherapyTypeModel> {
   final String id = 'TherapyTypeModel';
 
   static String _$therapyId(TherapyTypeModel v) => v.therapyId;
-  static const Field<TherapyTypeModel, String> _f$therapyId =
-      Field('therapyId', _$therapyId, key: r'id');
+  static const Field<TherapyTypeModel, String> _f$therapyId = Field(
+    'therapyId',
+    _$therapyId,
+    key: r'id',
+  );
   static DateTime _$createdAt(TherapyTypeModel v) => v.createdAt;
-  static const Field<TherapyTypeModel, DateTime> _f$createdAt =
-      Field('createdAt', _$createdAt, key: r'created_at');
+  static const Field<TherapyTypeModel, DateTime> _f$createdAt = Field(
+    'createdAt',
+    _$createdAt,
+    key: r'created_at',
+  );
   static String _$name(TherapyTypeModel v) => v.name;
   static const Field<TherapyTypeModel, String> _f$name = Field('name', _$name);
   static String _$description(TherapyTypeModel v) => v.description;
-  static const Field<TherapyTypeModel, String> _f$description =
-      Field('description', _$description);
+  static const Field<TherapyTypeModel, String> _f$description = Field(
+    'description',
+    _$description,
+  );
 
   @override
   final MappableFields<TherapyTypeModel> fields = const {
@@ -42,10 +52,11 @@ class TherapyTypeModelMapper extends ClassMapperBase<TherapyTypeModel> {
 
   static TherapyTypeModel _instantiate(DecodingData data) {
     return TherapyTypeModel(
-        therapyId: data.dec(_f$therapyId),
-        createdAt: data.dec(_f$createdAt),
-        name: data.dec(_f$name),
-        description: data.dec(_f$description));
+      therapyId: data.dec(_f$therapyId),
+      createdAt: data.dec(_f$createdAt),
+      name: data.dec(_f$name),
+      description: data.dec(_f$description),
+    );
   }
 
   @override
@@ -72,43 +83,53 @@ mixin TherapyTypeModelMappable {
   }
 
   TherapyTypeModelCopyWith<TherapyTypeModel, TherapyTypeModel, TherapyTypeModel>
-      get copyWith => _TherapyTypeModelCopyWithImpl(
-          this as TherapyTypeModel, $identity, $identity);
+  get copyWith =>
+      _TherapyTypeModelCopyWithImpl<TherapyTypeModel, TherapyTypeModel>(
+        this as TherapyTypeModel,
+        $identity,
+        $identity,
+      );
   @override
   String toString() {
-    return TherapyTypeModelMapper.ensureInitialized()
-        .stringifyValue(this as TherapyTypeModel);
+    return TherapyTypeModelMapper.ensureInitialized().stringifyValue(
+      this as TherapyTypeModel,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return TherapyTypeModelMapper.ensureInitialized()
-        .equalsValue(this as TherapyTypeModel, other);
+    return TherapyTypeModelMapper.ensureInitialized().equalsValue(
+      this as TherapyTypeModel,
+      other,
+    );
   }
 
   @override
   int get hashCode {
-    return TherapyTypeModelMapper.ensureInitialized()
-        .hashValue(this as TherapyTypeModel);
+    return TherapyTypeModelMapper.ensureInitialized().hashValue(
+      this as TherapyTypeModel,
+    );
   }
 }
 
 extension TherapyTypeModelValueCopy<$R, $Out>
     on ObjectCopyWith<$R, TherapyTypeModel, $Out> {
   TherapyTypeModelCopyWith<$R, TherapyTypeModel, $Out>
-      get $asTherapyTypeModel =>
-          $base.as((v, t, t2) => _TherapyTypeModelCopyWithImpl(v, t, t2));
+  get $asTherapyTypeModel =>
+      $base.as((v, t, t2) => _TherapyTypeModelCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class TherapyTypeModelCopyWith<$R, $In extends TherapyTypeModel, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  $R call(
-      {String? therapyId,
-      DateTime? createdAt,
-      String? name,
-      String? description});
+  $R call({
+    String? therapyId,
+    DateTime? createdAt,
+    String? name,
+    String? description,
+  });
   TherapyTypeModelCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
-      Then<$Out2, $R2> t);
+    Then<$Out2, $R2> t,
+  );
 }
 
 class _TherapyTypeModelCopyWithImpl<$R, $Out>
@@ -120,26 +141,30 @@ class _TherapyTypeModelCopyWithImpl<$R, $Out>
   late final ClassMapperBase<TherapyTypeModel> $mapper =
       TherapyTypeModelMapper.ensureInitialized();
   @override
-  $R call(
-          {String? therapyId,
-          DateTime? createdAt,
-          String? name,
-          String? description}) =>
-      $apply(FieldCopyWithData({
-        if (therapyId != null) #therapyId: therapyId,
-        if (createdAt != null) #createdAt: createdAt,
-        if (name != null) #name: name,
-        if (description != null) #description: description
-      }));
+  $R call({
+    String? therapyId,
+    DateTime? createdAt,
+    String? name,
+    String? description,
+  }) => $apply(
+    FieldCopyWithData({
+      if (therapyId != null) #therapyId: therapyId,
+      if (createdAt != null) #createdAt: createdAt,
+      if (name != null) #name: name,
+      if (description != null) #description: description,
+    }),
+  );
   @override
   TherapyTypeModel $make(CopyWithData data) => TherapyTypeModel(
-      therapyId: data.get(#therapyId, or: $value.therapyId),
-      createdAt: data.get(#createdAt, or: $value.createdAt),
-      name: data.get(#name, or: $value.name),
-      description: data.get(#description, or: $value.description));
+    therapyId: data.get(#therapyId, or: $value.therapyId),
+    createdAt: data.get(#createdAt, or: $value.createdAt),
+    name: data.get(#name, or: $value.name),
+    description: data.get(#description, or: $value.description),
+  );
 
   @override
   TherapyTypeModelCopyWith<$R2, TherapyTypeModel, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
-      _TherapyTypeModelCopyWithImpl($value, $cast, t);
+    Then<$Out2, $R2> t,
+  ) => _TherapyTypeModelCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }
+

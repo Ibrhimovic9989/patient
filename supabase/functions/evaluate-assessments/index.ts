@@ -1,14 +1,35 @@
+import { createClient } from "jsr:@supabase/supabase-js@2";
 
+// DTO Types (inlined for Dashboard deployment)
+interface AssessmentDTO {
+  name: string;
+  description: string;
+  category: string;
+  cutoff_score: number;
+  questions: QuestionDTO[];
+}
 
-import { createClient } from "@supabase/supabase-js";
+interface QuestionDTO {
+  question_id: string;
+  text: string;
+  options: OptionDTO[];
+}
 
-import { 
-  AssessmentDTO,
-  QuestionDTO,
-  OptionDTO,
-  AssessmentEvaluationRequestDTO,
-  AssessmentEvaluationQuestionDTO,
-} from "./dto/types.ts";
+interface OptionDTO {
+  option_id: string;
+  text: string;
+  score: number;
+}
+
+interface AssessmentEvaluationRequestDTO {
+  assessment_id: string;
+  questions: AssessmentEvaluationQuestionDTO[];
+}
+
+interface AssessmentEvaluationQuestionDTO {
+  question_id: string;
+  answer_id: string;
+}
 
 const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!);
 
@@ -27,6 +48,21 @@ const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPAB
  */
 
 Deno.serve( async (req) => {
+  // CORS headers for all responses
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, accept',
+    'Access-Control-Max-Age': '3600',
+  };
+
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, {
+      status: 204,
+      headers: corsHeaders,
+    });
+  }
 
   try {
 
@@ -39,11 +75,23 @@ Deno.serve( async (req) => {
       .single();
 
       if(error) {
-        return new Response(JSON.stringify({ error: "Internal Server Error" }), { status: 500 });
+        return new Response(
+          JSON.stringify({ error: "Internal Server Error" }), 
+          { 
+            status: 500,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          }
+        );
       }
 
       if (!data) {
-        return new Response(JSON.stringify({ error: "Assessment not found" }), { status: 404 });
+        return new Response(
+          JSON.stringify({ error: "Assessment not found" }), 
+          { 
+            status: 404,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          }
+        );
       }
 
       const answered_questions: AssessmentEvaluationRequestDTO = {
@@ -109,12 +157,17 @@ Deno.serve( async (req) => {
 
       return new Response(
         JSON.stringify(responseData),{
-          headers: { "Content-Type": "application/json" },
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 200,
         },
-
       );
   } catch (error) {
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), { status: 500 });
+    return new Response(
+      JSON.stringify({ error: "Internal Server Error" }), 
+      { 
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      }
+    );
   }
 })

@@ -52,7 +52,15 @@ class TherapistProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      await supabase.from("session").insert({
+      // Fetch patient's active package if exists
+      final packageResponse = await supabase
+          .from('patient_package')
+          .select('package_id, id, clinic_id')
+          .eq('patient_id', patientId)
+          .eq('status', 'active')
+          .maybeSingle();
+      
+      final sessionData = {
         "therapist_id": therapist["id"],
         "patient_id": patientId,
         "timestamp": DateTime.now().toIso8601String(),
@@ -60,7 +68,15 @@ class TherapistProvider with ChangeNotifier {
         "duration": 60,
         "name": therapist["name"],
         "status": "pending"
-      });
+      };
+      
+      if (packageResponse != null) {
+        sessionData["package_id"] = packageResponse["package_id"];
+        sessionData["patient_package_id"] = packageResponse["id"];
+        sessionData["clinic_id"] = packageResponse["clinic_id"];
+      }
+      
+      await supabase.from("session").insert(sessionData);
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Appointment booked successfully!"))

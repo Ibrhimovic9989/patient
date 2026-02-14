@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/theme/theme.dart';
 import '../../provider/task_provider.dart';
+import '../../model/task_model.dart';
 
 class DailyActivitiesScreen extends StatefulWidget {
   const DailyActivitiesScreen({super.key});
@@ -198,28 +199,61 @@ class _DailyActivitiesScreenState extends State<DailyActivitiesScreen>
                     : ListView.builder(
                         itemCount: tasks.length,
                         itemBuilder: (context, index) {
+                          final task = tasks[index];
+                          final hasInstructions = task.instructions != null && task.instructions!.isNotEmpty;
+                          final hasNote = task.note != null && task.note!.isNotEmpty;
+                          
                           return ListTile(
                             minTileHeight: 20,
                             leading: Checkbox(
-                              value: tasks[index].isCompleted,
+                              value: task.isCompleted,
                               visualDensity: VisualDensity.compact,
                               onChanged: (value) => taskProvider
-                                  .toggleTaskCompletion(tasks[index].activityId!, value!),
+                                  .toggleTaskCompletion(task.activityId!, value!),
                             ),
                             horizontalTitleGap: -4,
                             title: Text(
-                                tasks[index].activityName ?? '',
+                                task.activityName ?? '',
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
-                                decoration: tasks[index].isCompleted ?? false
+                                decoration: task.isCompleted ?? false
                                     ? TextDecoration.lineThrough
                                     : TextDecoration.none,
                                 decorationColor: Colors.black54,
                                 decorationThickness: 2,
-                                color: tasks[index].isCompleted ?? false
+                                color: task.isCompleted ?? false
                                     ? Colors.grey
                                     : Colors.black,
                               ),
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (hasInstructions)
+                                  IconButton(
+                                    icon: const Icon(Icons.info_outline, size: 20),
+                                    color: Colors.blue,
+                                    onPressed: () {
+                                      _showInstructionsDialog(
+                                        context,
+                                        task.activityName ?? '',
+                                        task.instructions ?? '',
+                                      );
+                                    },
+                                    tooltip: 'View Instructions',
+                                  ),
+                                IconButton(
+                                  icon: Icon(
+                                    hasNote ? Icons.note : Icons.note_add_outlined,
+                                    size: 20,
+                                    color: hasNote ? Colors.orange : Colors.grey,
+                                  ),
+                                  onPressed: () {
+                                    _showNoteDialog(context, taskProvider, task);
+                                  },
+                                  tooltip: hasNote ? 'Edit Note' : 'Add Note',
+                                ),
+                              ],
                             ),
                           );
                         },
@@ -228,6 +262,58 @@ class _DailyActivitiesScreenState extends State<DailyActivitiesScreen>
             ],
           );
         },
+      ),
+    );
+  }
+
+  void _showInstructionsDialog(BuildContext context, String activityName, String instructions) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Instructions: $activityName'),
+        content: SingleChildScrollView(
+          child: Text(instructions),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showNoteDialog(BuildContext context, TaskProvider taskProvider, PatientTaskModel task) {
+    final noteController = TextEditingController(text: task.note ?? '');
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Note for ${task.activityName ?? 'Activity'}'),
+        content: TextField(
+          controller: noteController,
+          decoration: const InputDecoration(
+            hintText: 'Add your note or feedback...',
+            border: OutlineInputBorder(),
+          ),
+          maxLines: 5,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              if (task.activityId != null) {
+                taskProvider.saveNote(task.activityId!, noteController.text);
+              }
+              Navigator.pop(context);
+            },
+            child: const Text('Save'),
+          ),
+        ],
       ),
     );
   }

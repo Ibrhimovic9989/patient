@@ -102,6 +102,8 @@ abstract interface class AuthRepository {
 
   Future<ActionResult> checkIfPatientAssessmentExists();
 
+  Future<ActionResult> checkIfPatientPackageExists();
+
   Future<ActionResult> checkIfPatientConsultationExists();
 
 }

@@ -69,9 +69,9 @@ mixin AssessmentResultModelMappable {
   }
 
   AssessmentResultModelCopyWith<AssessmentResultModel, AssessmentResultModel,
-          AssessmentResultModel>
-      get copyWith => _AssessmentResultModelCopyWithImpl(
-          this as AssessmentResultModel, $identity, $identity);
+      AssessmentResultModel> get copyWith => _AssessmentResultModelCopyWithImpl<
+          AssessmentResultModel, AssessmentResultModel>(
+      this as AssessmentResultModel, $identity, $identity);
   @override
   String toString() {
     return AssessmentResultModelMapper.ensureInitialized()
@@ -94,8 +94,8 @@ mixin AssessmentResultModelMappable {
 extension AssessmentResultModelValueCopy<$R, $Out>
     on ObjectCopyWith<$R, AssessmentResultModel, $Out> {
   AssessmentResultModelCopyWith<$R, AssessmentResultModel, $Out>
-      get $asAssessmentResultModel =>
-          $base.as((v, t, t2) => _AssessmentResultModelCopyWithImpl(v, t, t2));
+      get $asAssessmentResultModel => $base.as(
+          (v, t, t2) => _AssessmentResultModelCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class AssessmentResultModelCopyWith<
@@ -131,5 +131,5 @@ class _AssessmentResultModelCopyWithImpl<$R, $Out>
   @override
   AssessmentResultModelCopyWith<$R2, AssessmentResultModel, $Out2>
       $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-          _AssessmentResultModelCopyWithImpl($value, $cast, t);
+          _AssessmentResultModelCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

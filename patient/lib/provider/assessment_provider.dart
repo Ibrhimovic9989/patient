@@ -43,12 +43,34 @@ class AssessmentProvider with ChangeNotifier {
   }
 
 
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+  String? _errorMessage;
+  String? get errorMessage => _errorMessage;
+
   void fetchAllAssessments() async {
-    final result = await _repository.fetchAllAssessments();
-    if (result is ActionResultSuccess) {
-      _allAssessments = result.data;
-    }
+    _isLoading = true;
+    _errorMessage = null;
     notifyListeners();
+    
+    try {
+      final result = await _repository.fetchAllAssessments();
+      if (result is ActionResultSuccess) {
+        _allAssessments = result.data;
+        _errorMessage = null;
+      } else if (result is ActionResultFailure) {
+        _errorMessage = result.errorMessage;
+        _allAssessments = [];
+        print('Error fetching assessments: ${result.errorMessage}');
+      }
+    } catch (e) {
+      _errorMessage = e.toString();
+      _allAssessments = [];
+      print('Exception fetching assessments: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   //implement the submitAssessment method to submit the assessment when the submitted_assessment table is created

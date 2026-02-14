@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -28,7 +29,8 @@ import 'provider/therapist_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
+  // For web, .env must be in web/ directory. For other platforms, use ../.env
+  await dotenv.load(fileName: kIsWeb ? ".env" : "../.env");
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
@@ -74,7 +76,11 @@ Future<void> main() async {
             therapistRepository: context.read<TherapistRepository>(),
           ),
         ),
-        ChangeNotifierProvider(create: (context) => HomeProvider()),
+        ChangeNotifierProvider(
+          create: (context) => HomeProvider(
+            therapistRepository: context.read<TherapistRepository>(),
+          ),
+        ),
 
         ChangeNotifierProvider(create: (context) => TherapistDataProvider(therapistRepository: context.read<TherapistRepository>())),
         ChangeNotifierProvider(create: (context) => ConsultationProvider(SupabaseConsultationRepository())),

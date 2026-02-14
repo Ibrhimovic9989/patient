@@ -6,6 +6,7 @@ import 'package:patient/presentation/assessments/assessment_screen.dart';
 import 'package:patient/presentation/assessments/assessments_list_screen.dart';
 
 import 'package:patient/presentation/home/home_screen.dart';
+import 'package:patient/presentation/auth/clinic_selection_screen.dart';
 
 import 'package:patient/core/core.dart';
 import 'package:patient/model/auth_models/personal_info_model.dart';
@@ -63,7 +64,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
         SnackbarService.showSuccess('Personal Info saved successfully');
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => const AssessmentsListScreen(),
+            builder: (context) => const ClinicSelectionScreen(),
           ),
         );
       } else if(authProvider.apiStatus.isFailure) {

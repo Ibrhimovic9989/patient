@@ -6,10 +6,12 @@ import 'package:therapist/presentation/consultation/consultation_requests_screen
 import 'package:therapist/presentation/home/widgets/pending_request_view.dart';
 import 'package:therapist/provider/consultation_provider.dart';
 import 'package:therapist/provider/therapist_provider.dart';
+import 'package:therapist/provider/home_provider.dart';
 import 'widgets/stats_card.dart';
 import 'widgets/patient_card.dart';
 import '../session/session_screen.dart';
 import '../profile/profile_screen.dart';
+import '../auth/edit_profile_screen.dart';
 import 'dart:async';
 
 class HomeScreen extends StatefulWidget {
@@ -38,6 +40,8 @@ class _HomeScreenState extends State<HomeScreen> {
           .fetchConsultationRequests();
       Provider.of<TherapistDataProvider>(context, listen: false)
           .fetchPatientsMappedToTherapist();
+      Provider.of<HomeProvider>(context, listen: false)
+          .fetchStats();
     });
 
     _refreshTimer = Timer.periodic(const Duration(minutes: 3), (_) {
@@ -142,6 +146,19 @@ class HomeContent extends StatelessWidget {
           ],
         ),
         actions: [
+          // Edit profile button
+          IconButton(
+            icon: const Icon(Icons.edit, color: Colors.black),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const EditProfileScreen(),
+                ),
+              );
+            },
+            tooltip: 'Edit Profile',
+          ),
           // Add notification icon with badge
           Consumer<ConsultationProvider>(
             builder: (context, provider, _) {
@@ -224,28 +241,32 @@ class HomeContent extends StatelessWidget {
                   ),
                 ],
               ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  StatsCard(
-                    imagePath: 'assets/icon1.png',
-                    backgroundColor: Color(0xFFFEE8E8),
-                    label: 'Patients',
-                    value: '02',
-                  ),
-                  StatsCard(
-                    imagePath: 'assets/icon2.png',
-                    backgroundColor: Color(0xFFF1E8FE),
-                    label: 'Sessions',
-                    value: '20',
-                  ),
-                  StatsCard(
-                    imagePath: 'assets/icon3.png',
-                    backgroundColor: Color(0xFFE8FEF0),
-                    label: 'Therapies',
-                    value: '13',
-                  ),
-                ],
+              child: Consumer<HomeProvider>(
+                builder: (context, homeProvider, _) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      StatsCard(
+                        imagePath: 'assets/icon1.png',
+                        backgroundColor: const Color(0xFFFEE8E8),
+                        label: 'Patients',
+                        value: homeProvider.totalPatients.toString().padLeft(2, '0'),
+                      ),
+                      StatsCard(
+                        imagePath: 'assets/icon2.png',
+                        backgroundColor: const Color(0xFFF1E8FE),
+                        label: 'Sessions',
+                        value: homeProvider.totalSessions.toString().padLeft(2, '0'),
+                      ),
+                      StatsCard(
+                        imagePath: 'assets/icon3.png',
+                        backgroundColor: const Color(0xFFE8FEF0),
+                        label: 'Therapies',
+                        value: homeProvider.totalTherapies.toString().padLeft(2, '0'),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
             const SizedBox(height: 24),
@@ -263,14 +284,17 @@ class HomeContent extends StatelessWidget {
                 } else {
                   return Column(
                     children: provider.patients.map((patient) => PatientCard(
-                    name: patient.patientName,
-                    id: patient.patientId,
-                    phone: patient.phoneNo,
-                    email: patient.email,
-                    package: '-',
-                    duration: '-',
-                    imagePath: 'assets/abdul.png',
-                  )).toList(),
+                      name: patient.patientName,
+                      id: patient.patientId,
+                      phone: patient.phoneNo,
+                      email: patient.email,
+                      packageName: patient.packageName,
+                      packageStatus: patient.packageStatus,
+                      packageExpiresAt: patient.packageExpiresAt,
+                      packageTherapyTypes: patient.packageTherapyTypes,
+                      sessionUsage: patient.sessionUsage,
+                      imagePath: 'assets/abdul.png',
+                    )).toList(),
                   );
                 }
               }

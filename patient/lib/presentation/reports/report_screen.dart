@@ -85,8 +85,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                               final date = await showDatePicker(
                                 context: context,
                                 initialDate: DateTime.now(),
-                                firstDate: DateTime(2025),
-                                lastDate: DateTime(2026),
+                                firstDate: DateTime(2020),
+                                lastDate: DateTime(2030),
                               );
                               if (date != null) {
                                 setSelectedDate(date);

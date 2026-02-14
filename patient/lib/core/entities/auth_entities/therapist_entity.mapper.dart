@@ -51,19 +51,20 @@ class TherapistEntityMapper extends ClassMapperBase<TherapistEntity> {
       Field('offeredTherapies', _$offeredTherapies, key: r'offered_therapies');
   static int _$age(TherapistEntity v) => v.age;
   static const Field<TherapistEntity, int> _f$age = Field('age', _$age);
-  static String _$regulatoryBody(TherapistEntity v) => v.regulatoryBody;
-  static const Field<TherapistEntity, String> _f$regulatoryBody =
-      Field('regulatoryBody', _$regulatoryBody, key: r'regulatory_body');
-  static String _$startAvailabilityTime(TherapistEntity v) =>
+  static String? _$regulatoryBody(TherapistEntity v) => v.regulatoryBody;
+  static const Field<TherapistEntity, String> _f$regulatoryBody = Field(
+      'regulatoryBody', _$regulatoryBody,
+      key: r'regulatory_body', opt: true);
+  static String? _$startAvailabilityTime(TherapistEntity v) =>
       v.startAvailabilityTime;
   static const Field<TherapistEntity, String> _f$startAvailabilityTime = Field(
       'startAvailabilityTime', _$startAvailabilityTime,
-      key: r'start_availability_time');
-  static String _$endAvailabilityTime(TherapistEntity v) =>
+      key: r'start_availability_time', opt: true);
+  static String? _$endAvailabilityTime(TherapistEntity v) =>
       v.endAvailabilityTime;
   static const Field<TherapistEntity, String> _f$endAvailabilityTime = Field(
       'endAvailabilityTime', _$endAvailabilityTime,
-      key: r'end_availability_time');
+      key: r'end_availability_time', opt: true);
 
   @override
   final MappableFields<TherapistEntity> fields = const {
@@ -203,9 +204,9 @@ class _TherapistEntityCopyWithImpl<$R, $Out>
           String? gender,
           List<String>? offeredTherapies,
           int? age,
-          String? regulatoryBody,
-          String? startAvailabilityTime,
-          String? endAvailabilityTime}) =>
+          Object? regulatoryBody = $none,
+          Object? startAvailabilityTime = $none,
+          Object? endAvailabilityTime = $none}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
         if (createdAt != null) #createdAt: createdAt,
@@ -218,10 +219,10 @@ class _TherapistEntityCopyWithImpl<$R, $Out>
         if (gender != null) #gender: gender,
         if (offeredTherapies != null) #offeredTherapies: offeredTherapies,
         if (age != null) #age: age,
-        if (regulatoryBody != null) #regulatoryBody: regulatoryBody,
-        if (startAvailabilityTime != null)
+        if (regulatoryBody != $none) #regulatoryBody: regulatoryBody,
+        if (startAvailabilityTime != $none)
           #startAvailabilityTime: startAvailabilityTime,
-        if (endAvailabilityTime != null)
+        if (endAvailabilityTime != $none)
           #endAvailabilityTime: endAvailabilityTime
       }));
   @override

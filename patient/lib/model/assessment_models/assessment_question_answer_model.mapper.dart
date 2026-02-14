@@ -67,7 +67,8 @@ mixin AssessmentQuestionAnswerModelMappable {
 
   AssessmentQuestionAnswerModelCopyWith<AssessmentQuestionAnswerModel,
           AssessmentQuestionAnswerModel, AssessmentQuestionAnswerModel>
-      get copyWith => _AssessmentQuestionAnswerModelCopyWithImpl(
+      get copyWith => _AssessmentQuestionAnswerModelCopyWithImpl<
+              AssessmentQuestionAnswerModel, AssessmentQuestionAnswerModel>(
           this as AssessmentQuestionAnswerModel, $identity, $identity);
   @override
   String toString() {
@@ -91,8 +92,8 @@ mixin AssessmentQuestionAnswerModelMappable {
 extension AssessmentQuestionAnswerModelValueCopy<$R, $Out>
     on ObjectCopyWith<$R, AssessmentQuestionAnswerModel, $Out> {
   AssessmentQuestionAnswerModelCopyWith<$R, AssessmentQuestionAnswerModel, $Out>
-      get $asAssessmentQuestionAnswerModel => $base.as(
-          (v, t, t2) => _AssessmentQuestionAnswerModelCopyWithImpl(v, t, t2));
+      get $asAssessmentQuestionAnswerModel => $base.as((v, t, t2) =>
+          _AssessmentQuestionAnswerModelCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class AssessmentQuestionAnswerModelCopyWith<
@@ -130,5 +131,5 @@ class _AssessmentQuestionAnswerModelCopyWithImpl<$R, $Out>
   AssessmentQuestionAnswerModelCopyWith<$R2, AssessmentQuestionAnswerModel,
       $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _AssessmentQuestionAnswerModelCopyWithImpl($value, $cast, t);
+      _AssessmentQuestionAnswerModelCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

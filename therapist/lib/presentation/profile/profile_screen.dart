@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:therapist/provider/auth_provider.dart';
+import 'package:therapist/presentation/auth/edit_profile_screen.dart';
 import 'widgets/profile_option.dart'; 
 
 class ProfileScreen extends StatelessWidget {
@@ -13,13 +16,29 @@ class ProfileScreen extends StatelessWidget {
             Container(
               color: Colors.white,
               padding: const EdgeInsets.all(16.0),
-              alignment: Alignment.centerLeft,
-              child: const Text(
-                "Profile",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Profile",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.edit, color: Colors.purple),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const EditProfileScreen(),
+                        ),
+                      );
+                    },
+                    tooltip: 'Edit Profile',
+                  ),
+                ],
               ),
             ),
             Padding(

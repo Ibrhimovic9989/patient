@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:therapist/core/entities/auth_entities/therapist_personal_info_entity.dart';
 import 'package:therapist/core/repository/auth/auth_repository.dart';
 import 'package:therapist/core/result/result.dart';
+import 'package:therapist/presentation/auth/clinic_selection_screen.dart';
 import 'package:therapist/presentation/auth/personal_details_screen.dart';
 import 'package:therapist/presentation/home/home_screen.dart';
 import 'package:supabase/supabase.dart';
@@ -90,6 +91,54 @@ class AuthProvider extends ChangeNotifier {
     return success;
   }
 
+  Map<String, dynamic>? _personalInfo;
+  Map<String, dynamic>? get personalInfo => _personalInfo;
+
+  Future<bool> getPersonalInfo() async {
+    _isLoading = true;
+    _errorMessage = '';
+    notifyListeners();
+
+    final result = await _authRepository.getPersonalInfo();
+
+    bool success = false;
+    
+    if (result is ActionResultSuccess) {
+      _personalInfo = result.data as Map<String, dynamic>;
+      success = true;
+    } else if (result is ActionResultFailure) {
+      _errorMessage = result.errorMessage!;
+      success = false;
+    }
+
+    _isLoading = false;
+    notifyListeners();
+    return success;
+  }
+
+  Future<bool> updatePersonalInfo(TherapistPersonalInfoEntity personalInfoEntity) async {
+    _isLoading = true;
+    _errorMessage = '';
+    notifyListeners();
+
+    final result = await _authRepository.updatePersonalInfo(personalInfoEntity);
+
+    bool success = false;
+    
+    if (result is ActionResultSuccess) {
+      success = true;
+      // Refresh personal info after update
+      await getPersonalInfo();
+    } else if (result is ActionResultFailure) {
+      _errorMessage = result.errorMessage!;
+      success = false;
+    }
+
+    _isLoading = false;
+    notifyListeners();
+    return success;
+  }
+
   Future<void> checkAuthentication() async {
     _userId = await _authRepository.getUserId();
     _isAuthenticated = _userId != null;
@@ -128,7 +177,38 @@ class AuthProvider extends ChangeNotifier {
     return _supabaseClient.auth.currentSession?.user.userMetadata;
   }
 
-  void navigateBasedOnUserStatus(BuildContext context) {
+  Future<bool> checkIfTherapistHasClinic() async {
+    if (_userId == null) return false;
+    
+    try {
+      final response = await _supabaseClient
+          .from('therapist')
+          .select('clinic_id')
+          .eq('id', _userId!)
+          .maybeSingle();
+
+      return response != null && response['clinic_id'] != null;
+    } catch (e) {
+      // If error, assume no clinic (safer to show selection screen)
+      return false;
+    }
+  }
+
+  void navigateBasedOnUserStatus(BuildContext context) async {
+    // First check if therapist has a clinic
+    final hasClinic = await checkIfTherapistHasClinic();
+    
+    if (!hasClinic) {
+      // No clinic assigned - show clinic selection screen
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const ClinicSelectionScreen(),
+        ),
+      );
+      return;
+    }
+    
+    // Has clinic - proceed with normal flow
     if (_isNewUser) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -13,6 +14,7 @@ import 'package:patient/repository/supabase_auth_repository.dart';
 
 import 'package:patient/provider/reports_provider.dart';
 import 'package:patient/repository/supabase_patient_repository.dart';
+import 'package:patient/provider/package_provider.dart';
 
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -20,12 +22,14 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'provider/task_provider.dart';
 import 'provider/therapy_goals_provider.dart';
+import 'provider/progress_provider.dart';
 
 
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
+  // For web, .env must be in web/ directory. For other platforms, use ../.env
+  await dotenv.load(fileName: kIsWeb ? ".env" : "../.env");
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
@@ -65,6 +69,12 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => AppointmentsProvider(
           authRepository: SupabaseAuthRepository(supabaseClient: Supabase.instance.client),
           patientRepository: SupabasePatientRepository(supabaseClient: Supabase.instance.client)
+        )),
+        ChangeNotifierProvider(create: (_) => PackageProvider(
+          repository: SupabasePatientRepository(supabaseClient: Supabase.instance.client)
+        )),
+        ChangeNotifierProvider(create: (_) => ProgressProvider(
+          patientRepository: SupabasePatientRepository(supabaseClient: Supabase.instance.client),
         ))
       ],
       child: const MyApp(),

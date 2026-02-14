@@ -27,11 +27,11 @@ class TherapistModel with TherapistModelMappable {
   @MappableField(key: 'age')
   final int age;
   @MappableField(key: 'regulatory_body')
-  final String regulatoryBody;
+  final String? regulatoryBody;
   @MappableField(key: 'start_availability_time')
-  final String startAvailabilityTime;
+  final String? startAvailabilityTime;
   @MappableField(key: 'end_availability_time')
-  final String endAvailabilityTime;
+  final String? endAvailabilityTime;
 
 
   TherapistModel({
@@ -46,8 +46,8 @@ class TherapistModel with TherapistModelMappable {
     required this.gender,
     required this.offeredTherapies,
     required this.age,
-    required this.regulatoryBody,
-    required this.startAvailabilityTime,
-    required this.endAvailabilityTime,
+    this.regulatoryBody,
+    this.startAvailabilityTime,
+    this.endAvailabilityTime,
   });
 }

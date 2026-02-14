@@ -73,7 +73,8 @@ mixin AssessmentQuestionEntityMappable {
 
   AssessmentQuestionEntityCopyWith<AssessmentQuestionEntity,
           AssessmentQuestionEntity, AssessmentQuestionEntity>
-      get copyWith => _AssessmentQuestionEntityCopyWithImpl(
+      get copyWith => _AssessmentQuestionEntityCopyWithImpl<
+              AssessmentQuestionEntity, AssessmentQuestionEntity>(
           this as AssessmentQuestionEntity, $identity, $identity);
   @override
   String toString() {
@@ -97,8 +98,8 @@ mixin AssessmentQuestionEntityMappable {
 extension AssessmentQuestionEntityValueCopy<$R, $Out>
     on ObjectCopyWith<$R, AssessmentQuestionEntity, $Out> {
   AssessmentQuestionEntityCopyWith<$R, AssessmentQuestionEntity, $Out>
-      get $asAssessmentQuestionEntity => $base
-          .as((v, t, t2) => _AssessmentQuestionEntityCopyWithImpl(v, t, t2));
+      get $asAssessmentQuestionEntity => $base.as((v, t, t2) =>
+          _AssessmentQuestionEntityCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class AssessmentQuestionEntityCopyWith<
@@ -153,5 +154,5 @@ class _AssessmentQuestionEntityCopyWithImpl<$R, $Out>
   @override
   AssessmentQuestionEntityCopyWith<$R2, AssessmentQuestionEntity, $Out2>
       $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-          _AssessmentQuestionEntityCopyWithImpl($value, $cast, t);
+          _AssessmentQuestionEntityCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

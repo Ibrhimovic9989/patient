@@ -17,6 +17,7 @@ class ActivitySetCard extends StatefulWidget {
   final List<bool> selectedDays;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
+  final VoidCallback? onViewCompletion;
   final String startDate;
   final String endDate;
 
@@ -34,6 +35,7 @@ class ActivitySetCard extends StatefulWidget {
     required this.selectedDays,
     required this.onEdit,
     required this.onDelete,
+    this.onViewCompletion,
     required this.startDate,
     required this.endDate,
   });
@@ -236,6 +238,11 @@ class _ActivitySetCardState extends State<ActivitySetCard> {
                       children: [
                         DailyActivitesActionBtn(
                             icon: Icons.edit, label: 'Edit', onTap: widget.onEdit),
+                        const SizedBox(height: 12),
+                        DailyActivitesActionBtn(
+                            icon: Icons.check_circle_outline, 
+                            label: 'View Completion', 
+                            onTap: widget.onViewCompletion ?? () {}),
                         const SizedBox(height: 12),
                         DailyActivitesActionBtn(
                                 icon: Icons.delete_outline, label: 'Delete', onTap: widget.onDelete),

@@ -45,7 +45,16 @@ class TherapyGoalEntityMapper extends ClassMapperBase<TherapyGoalEntity> {
       Field('activities', _$activities);
   static String? _$patientId(TherapyGoalEntity v) => v.patientId;
   static const Field<TherapyGoalEntity, String> _f$patientId =
-      Field('patientId', _$patientId, key: r'patient_id');
+      Field('patientId', _$patientId, key: r'patient_id', opt: true);
+  static String? _$sessionNotes(TherapyGoalEntity v) => v.sessionNotes;
+  static const Field<TherapyGoalEntity, String> _f$sessionNotes =
+      Field('sessionNotes', _$sessionNotes, key: r'session_notes', opt: true);
+  static Map<String, String>? _$goalAchievementStatus(TherapyGoalEntity v) =>
+      v.goalAchievementStatus;
+  static const Field<TherapyGoalEntity, Map<String, String>>
+      _f$goalAchievementStatus = Field(
+          'goalAchievementStatus', _$goalAchievementStatus,
+          key: r'goal_achievement_status', opt: true);
 
   @override
   final MappableFields<TherapyGoalEntity> fields = const {
@@ -57,6 +66,8 @@ class TherapyGoalEntityMapper extends ClassMapperBase<TherapyGoalEntity> {
     #regressions: _f$regressions,
     #activities: _f$activities,
     #patientId: _f$patientId,
+    #sessionNotes: _f$sessionNotes,
+    #goalAchievementStatus: _f$goalAchievementStatus,
   };
 
   static TherapyGoalEntity _instantiate(DecodingData data) {
@@ -68,7 +79,9 @@ class TherapyGoalEntityMapper extends ClassMapperBase<TherapyGoalEntity> {
         observations: data.dec(_f$observations),
         regressions: data.dec(_f$regressions),
         activities: data.dec(_f$activities),
-        patientId: data.dec(_f$patientId));
+        patientId: data.dec(_f$patientId),
+        sessionNotes: data.dec(_f$sessionNotes),
+        goalAchievementStatus: data.dec(_f$goalAchievementStatus));
   }
 
   @override
@@ -135,6 +148,8 @@ abstract class TherapyGoalEntityCopyWith<$R, $In extends TherapyGoalEntity,
       TherapyModelCopyWith<$R, TherapyModel, TherapyModel>> get regressions;
   ListCopyWith<$R, TherapyModel,
       TherapyModelCopyWith<$R, TherapyModel, TherapyModel>> get activities;
+  MapCopyWith<$R, String, String, ObjectCopyWith<$R, String, String>>?
+      get goalAchievementStatus;
   $R call(
       {DateTime? performedOn,
       String? therapistId,
@@ -143,7 +158,9 @@ abstract class TherapyGoalEntityCopyWith<$R, $In extends TherapyGoalEntity,
       List<TherapyModel>? observations,
       List<TherapyModel>? regressions,
       List<TherapyModel>? activities,
-      String? patientId});
+      String? patientId,
+      String? sessionNotes,
+      Map<String, String>? goalAchievementStatus});
   TherapyGoalEntityCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(
       Then<$Out2, $R2> t);
 }
@@ -177,6 +194,14 @@ class _TherapyGoalEntityCopyWithImpl<$R, $Out>
       get activities => ListCopyWith($value.activities,
           (v, t) => v.copyWith.$chain(t), (v) => call(activities: v));
   @override
+  MapCopyWith<$R, String, String, ObjectCopyWith<$R, String, String>>?
+      get goalAchievementStatus => $value.goalAchievementStatus != null
+          ? MapCopyWith(
+              $value.goalAchievementStatus!,
+              (v, t) => ObjectCopyWith(v, $identity, t),
+              (v) => call(goalAchievementStatus: v))
+          : null;
+  @override
   $R call(
           {DateTime? performedOn,
           Object? therapistId = $none,
@@ -185,7 +210,9 @@ class _TherapyGoalEntityCopyWithImpl<$R, $Out>
           List<TherapyModel>? observations,
           List<TherapyModel>? regressions,
           List<TherapyModel>? activities,
-          Object? patientId = $none}) =>
+          Object? patientId = $none,
+          Object? sessionNotes = $none,
+          Object? goalAchievementStatus = $none}) =>
       $apply(FieldCopyWithData({
         if (performedOn != null) #performedOn: performedOn,
         if (therapistId != $none) #therapistId: therapistId,
@@ -194,7 +221,10 @@ class _TherapyGoalEntityCopyWithImpl<$R, $Out>
         if (observations != null) #observations: observations,
         if (regressions != null) #regressions: regressions,
         if (activities != null) #activities: activities,
-        if (patientId != $none) #patientId: patientId
+        if (patientId != $none) #patientId: patientId,
+        if (sessionNotes != $none) #sessionNotes: sessionNotes,
+        if (goalAchievementStatus != $none)
+          #goalAchievementStatus: goalAchievementStatus
       }));
   @override
   TherapyGoalEntity $make(CopyWithData data) => TherapyGoalEntity(
@@ -205,7 +235,10 @@ class _TherapyGoalEntityCopyWithImpl<$R, $Out>
       observations: data.get(#observations, or: $value.observations),
       regressions: data.get(#regressions, or: $value.regressions),
       activities: data.get(#activities, or: $value.activities),
-      patientId: data.get(#patientId, or: $value.patientId));
+      patientId: data.get(#patientId, or: $value.patientId),
+      sessionNotes: data.get(#sessionNotes, or: $value.sessionNotes),
+      goalAchievementStatus:
+          data.get(#goalAchievementStatus, or: $value.goalAchievementStatus));
 
   @override
   TherapyGoalEntityCopyWith<$R2, TherapyGoalEntity, $Out2> $chain<$R2, $Out2>(

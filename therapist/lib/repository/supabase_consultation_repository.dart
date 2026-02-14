@@ -14,17 +14,31 @@ class SupabaseConsultationRepository implements ConsultationRepository {
   @override
   Future<ActionResult> fetchConsultationRequests() async {
     try {
+      // First get therapist's clinic_id
+      final therapistResponse = await _supabaseClient
+          .from('therapist')
+          .select('clinic_id')
+          .eq('id', _supabaseClient.auth.currentUser!.id)
+          .maybeSingle();
+
+      if (therapistResponse == null || therapistResponse['clinic_id'] == null) {
+        return ActionResultFailure(
+          errorMessage: 'Therapist not assigned to a clinic',
+          statusCode: 404,
+        );
+      }
+
+      final clinicId = therapistResponse['clinic_id'];
+
       final response = await _supabaseClient
-      .from('session')
-      .select('*, patient (patient_name)')
-      .eq('therapist_id', _supabaseClient.auth.currentUser!.id)
-      .eq('is_consultation', true);
+          .from('session')
+          .select('*, patient (patient_name)')
+          .eq('therapist_id', _supabaseClient.auth.currentUser!.id)
+          .eq('is_consultation', true)
+          .eq('clinic_id', clinicId); // Filter by clinic
 
       if (response.isEmpty) {
-        return ActionResultFailure(
-          errorMessage: 'No consultation requests found',
-          statusCode: 404
-        );
+        return ActionResultSuccess(data: <dynamic>[], statusCode: 200);
       }
 
       final data = response as List<dynamic>;
@@ -32,7 +46,9 @@ class SupabaseConsultationRepository implements ConsultationRepository {
       final consultationData = data.map((session) {
         return ConsultationRequestEntity(
           id: session['id'],
-          patientName: session['patient']['patient_name'] ?? '',
+          patientName: session['patient'] != null 
+              ? (session['patient'] as Map<String, dynamic>)['patient_name'] ?? ''
+              : '',
           timestamp: session['timestamp'],
           therapistId: session['therapist_id'],
           patientId: session['patient_id'],

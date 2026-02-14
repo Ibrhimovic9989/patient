@@ -31,6 +31,9 @@ class DailyActivitiesProvider extends ChangeNotifier {
   ApiStatus _deleteActivitySetStatus = ApiStatus.initial;
   ApiStatus get deleteActivitySetStatus => _deleteActivitySetStatus;
 
+  String? _errorMessage;
+  String? get errorMessage => _errorMessage;
+
   Future<void> deleteActivitySet(String activitySetId, String patientId) async {
     try {
       _deleteActivitySetStatus = ApiStatus.loading;
@@ -47,19 +50,30 @@ class DailyActivitiesProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> addOrUpdateActivitySet(DailyActivityResponseModel activitySet) async {
+  Future<void> addOrUpdateActivitySet(
+    DailyActivityResponseModel activitySet, {
+    String? patientId,
+  }) async {
     try {
       _addActivitySetStatus = ApiStatus.loading;
       notifyListeners();
       final result = await _therapyRepository.addOrUpdateDailyActivity(activitySet.toEntity());
       if(result is ActionResultSuccess) {
         _addActivitySetStatus = ApiStatus.success;
+        _errorMessage = null;
+        // Refresh the list if patientId is provided
+        if (patientId != null) {
+          await getDailyActivities(patientId);
+        }
       } else {
         _addActivitySetStatus = ApiStatus.failure;
+        _errorMessage = result.errorMessage?.toString() ?? 'Failed to save activity set';
       }
       notifyListeners();
     } catch (e) {
       _addActivitySetStatus = ApiStatus.failure;
+      _errorMessage = e.toString();
+      notifyListeners();
     }
   }
 
@@ -85,5 +99,52 @@ class DailyActivitiesProvider extends ChangeNotifier {
   void toggleExpanded() {
     _isExpanded = !_isExpanded;
     notifyListeners();
+  }
+
+  // Activity Completion Tracking
+  ApiStatus _activityCompletionStatus = ApiStatus.initial;
+  ApiStatus get activityCompletionStatus => _activityCompletionStatus;
+
+  List<Map<String, dynamic>> _activityCompletionData = [];
+  List<Map<String, dynamic>> get activityCompletionData => _activityCompletionData;
+
+  String? _activityCompletionError;
+  String? get activityCompletionError => _activityCompletionError;
+
+  Future<void> getPatientActivityCompletion(
+    String patientId, {
+    String? activitySetId,
+    DateTime? startDate,
+    DateTime? endDate,
+  }) async {
+    try {
+      _activityCompletionStatus = ApiStatus.loading;
+      _activityCompletionError = null;
+      notifyListeners();
+
+      final result = await _therapyRepository.getPatientActivityCompletion(
+        patientId,
+        activitySetId: activitySetId,
+        startDate: startDate,
+        endDate: endDate,
+      );
+
+      if (result is ActionResultSuccess) {
+        _activityCompletionData = (result.data as List<dynamic>)
+            .map((e) => e as Map<String, dynamic>)
+            .toList();
+        _activityCompletionStatus = ApiStatus.success;
+      } else {
+        _activityCompletionData = [];
+        _activityCompletionStatus = ApiStatus.failure;
+        _activityCompletionError = result.errorMessage?.toString();
+      }
+      notifyListeners();
+    } catch (e) {
+      _activityCompletionData = [];
+      _activityCompletionStatus = ApiStatus.failure;
+      _activityCompletionError = e.toString();
+      notifyListeners();
+    }
   }
 }

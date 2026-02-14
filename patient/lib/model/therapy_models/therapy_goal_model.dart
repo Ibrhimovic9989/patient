@@ -50,6 +50,12 @@ class TherapyGoalModel with TherapyGoalModelMappable {
   @MappableField(key: 'specialization')
   final String? specialization;
 
+  @MappableField(key: 'session_notes')
+  final String? sessionNotes;
+
+  @MappableField(key: 'goal_achievement_status')
+  final Map<String, String>? goalAchievementStatus;
+
   TherapyGoalModel({
     required this.performedOn,
     this.therapistId,
@@ -65,6 +71,8 @@ class TherapyGoalModel with TherapyGoalModelMappable {
     this.therapyType,
     this.therapyMode,
     this.specialization,
+    this.sessionNotes,
+    this.goalAchievementStatus,
   });
 
 }

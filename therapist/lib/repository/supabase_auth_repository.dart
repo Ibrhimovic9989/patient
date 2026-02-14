@@ -1,8 +1,4 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:therapist/core/entities/auth_entities/therapist_personal_info_entity.dart';
 import 'package:therapist/core/repository/auth/auth_repository.dart';
@@ -21,11 +17,8 @@ class SupabaseAuthRepository implements AuthRepository {
   @override
   Future<ActionResult> signInWithGoogle() async {
     try {
-      if (kIsWeb) {
-        await _handleWebSignIn();
-      } else {
-        await _handleMobileSignIn();
-      }
+      // Use web view OAuth for both web and mobile
+      await _handleOAuthSignIn();
       
       // After successful sign-in, check if the user exists in the therapist table
       final user = _supabaseClient.auth.currentUser;
@@ -62,41 +55,23 @@ class SupabaseAuthRepository implements AuthRepository {
     }
   }
 
-  Future<void> _handleWebSignIn() async {
-    final supabaseUrl = dotenv.env['SUPABASE_URL'] ??
-        (throw Exception("Supabase URL not found in .env"));
-
+  Future<void> _handleOAuthSignIn() async {
+    // Get current app URL for redirect
+    String currentUrl;
+    if (kIsWeb) {
+      // Use Uri.base for web (works without dart:html)
+      currentUrl = Uri.base.toString().split('?').first; // Remove query params
+    } else {
+      // For mobile, use a deep link URL scheme
+      // This should match your app's URL scheme configured in AndroidManifest.xml and Info.plist
+      // Supabase will handle the redirect automatically
+      currentUrl = 'com.neurotrack.therapist://login-callback';
+    }
+    
     await _supabaseClient.auth.signInWithOAuth(
       OAuthProvider.google,
-      redirectTo: "$supabaseUrl/auth/v1/callback",
+      redirectTo: currentUrl,
       authScreenLaunchMode: LaunchMode.platformDefault,
-    );
-  }
-
-  Future<void> _handleMobileSignIn() async {
-    final webClientId = dotenv.env['GOOGLE_WEB_CLIENT_ID'] ??
-        (throw Exception("WEB_CLIENT_ID not found in .env"));
-    final iosClientId = dotenv.env['GOOGLE_IOS_CLIENT_ID'];
-    
-    final GoogleSignIn googleSignIn = GoogleSignIn(
-      clientId: Platform.isIOS ? iosClientId : null,
-      serverClientId: webClientId,
-      scopes: ['email', 'profile'],
-    );
-
-    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-    if (googleUser == null) throw 'Sign in cancelled';
-
-    final GoogleSignInAuthentication googleAuth = 
-        await googleUser.authentication;
-
-    if (googleAuth.idToken == null) throw 'No ID Token found';
-    if (googleAuth.accessToken == null) throw 'No Access Token found';
-    
-    await _supabaseClient.auth.signInWithIdToken(
-      provider: OAuthProvider.google,
-      idToken: googleAuth.idToken!,
-      accessToken: googleAuth.accessToken,
     );
   }
 
@@ -114,15 +89,30 @@ class SupabaseAuthRepository implements AuthRepository {
         );
       }
       
-      // Create data with user ID explicitly set
-      final data = {
-        'id': currentUser.id,  // THIS IS THE KEY FIX
-        ...personalInfoEntity.toMap(),
+      // Build data map directly from entity fields
+      // Note: profession_id, profession_name, and license are NOT stored in therapist table
+      final data = <String, dynamic>{
+        'id': currentUser.id,
+        'email': currentUser.email ?? '',  // Required field - get from auth user
+        'phone': '',  // Required field - will be empty initially, user can update later
+        'name': personalInfoEntity.name,
+        'age': personalInfoEntity.age,
+        'gender': personalInfoEntity.gender,
+        'specialisation': personalInfoEntity.specialization,
+        'offered_therapies': personalInfoEntity.therapies,
+        'regulatory_body': personalInfoEntity.regulatoryBody,
+        'license_number': personalInfoEntity.licenseNumber,
+        'start_availability_time': personalInfoEntity.startAvailabilityTime,
+        'end_availability_time': personalInfoEntity.endAvailabilityTime,
       };
       
-      print("Storing therapist data with ID: ${currentUser.id}");
+      // Don't remove null values - they're valid for nullable columns
       
-      // Use insert with the complete data including ID
+      print("Storing therapist data with ID: ${currentUser.id}");
+      print("Email: ${currentUser.email}");
+      print("Data keys: ${data.keys}");
+      
+      // Use insert with the complete data including ID, email, and phone
       await _supabaseClient.from('therapist').insert(data);
 
       return ActionResultSuccess(
@@ -131,6 +121,87 @@ class SupabaseAuthRepository implements AuthRepository {
       );
     } catch(e) {
       print("Error storing personal info: $e");
+      return ActionResultFailure(
+        errorMessage: e.toString(),
+        statusCode: 400,
+      );
+    }
+  }
+
+  @override
+  Future<ActionResult> updatePersonalInfo(TherapistPersonalInfoEntity personalInfoEntity) async {
+    try {
+      final currentUser = _supabaseClient.auth.currentUser;
+      
+      if (currentUser == null) {
+        return ActionResultFailure(
+          errorMessage: 'No authenticated user found. Please sign in again.',
+          statusCode: 401,
+        );
+      }
+      
+      // Build update data map
+      final data = <String, dynamic>{
+        'name': personalInfoEntity.name,
+        'age': personalInfoEntity.age,
+        'gender': personalInfoEntity.gender,
+        'specialisation': personalInfoEntity.specialization,
+        'offered_therapies': personalInfoEntity.therapies,
+        'regulatory_body': personalInfoEntity.regulatoryBody,
+        'license_number': personalInfoEntity.licenseNumber,
+        'start_availability_time': personalInfoEntity.startAvailabilityTime,
+        'end_availability_time': personalInfoEntity.endAvailabilityTime,
+      };
+      
+      // Update the therapist record
+      await _supabaseClient
+          .from('therapist')
+          .update(data)
+          .eq('id', currentUser.id);
+
+      return ActionResultSuccess(
+        data: 'Personal information updated successfully',
+        statusCode: 200
+      );
+    } catch(e) {
+      print("Error updating personal info: $e");
+      return ActionResultFailure(
+        errorMessage: e.toString(),
+        statusCode: 400,
+      );
+    }
+  }
+
+  @override
+  Future<ActionResult> getPersonalInfo() async {
+    try {
+      final currentUser = _supabaseClient.auth.currentUser;
+      
+      if (currentUser == null) {
+        return ActionResultFailure(
+          errorMessage: 'No authenticated user found. Please sign in again.',
+          statusCode: 401,
+        );
+      }
+      
+      final response = await _supabaseClient
+          .from('therapist')
+          .select()
+          .eq('id', currentUser.id)
+          .maybeSingle();
+      
+      if (response == null) {
+        return ActionResultFailure(
+          errorMessage: 'Therapist information not found',
+          statusCode: 404,
+        );
+      }
+      
+      return ActionResultSuccess(
+        data: response,
+        statusCode: 200,
+      );
+    } catch(e) {
       return ActionResultFailure(
         errorMessage: e.toString(),
         statusCode: 400,

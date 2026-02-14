@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base href="/">
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="Clinic management app for NeuroTrack">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Clinic App">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>Clinic App</title>
+  <link rel="manifest" href="manifest.json">
+
+  <script>
+    var serviceWorkerVersion = null;
+    var source = 'flutter_service_worker.js?v=' + serviceWorkerVersion;
+    var serviceWorkerUrl = source;
+    var serviceWorkerRegistration;
+    function setRootEl() {
+      if (!document.getElementById('loading')) {
+        setTimeout(setRootEl, 100);
+      } else {
+        document.getElementById('loading').remove();
+        var loading = document.createElement('div');
+        loading.id = 'loading';
+        loading.innerHTML = '<p>Loading...</p>';
+        document.body.insertBefore(loading, document.body.firstChild);
+      }
+    }
+    setRootEl();
+  </script>
+  <script src="flutter.js" defer></script>
+</head>
+<body>
+  <script>
+    window.addEventListener('load', function(ev) {
+      _flutter.loader.loadEntrypoint({
+        serviceWorker: {
+          serviceWorkerVersion: serviceWorkerVersion,
+        },
+        onEntrypointLoaded: function(engineInitializer) {
+          engineInitializer.initializeEngine().then(function(appRunner) {
+            appRunner.runApp();
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

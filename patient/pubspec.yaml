@@ -76,6 +76,7 @@ dependencies:
   flutter_gemini: ^3.0.0
   get_it: ^8.2.0
   rxdart: ^0.28.0
+  fl_chart: ^0.69.0
 
 dev_dependencies:
   flutter_test:

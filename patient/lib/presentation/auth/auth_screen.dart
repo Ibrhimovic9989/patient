@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:patient/gen/assets.gen.dart';
 import 'package:patient/presentation/assessments/assessments_list_screen.dart';
+import 'package:patient/presentation/assessments/package_selection_screen.dart';
+import 'package:patient/presentation/auth/clinic_selection_screen.dart';
 import 'package:patient/presentation/auth/consultation_request_screen.dart';
 import 'package:patient/presentation/auth/personal_details_screen.dart';
 import 'package:patient/presentation/home/home_screen.dart';
@@ -103,7 +105,9 @@ class _AuthScreenState extends State<AuthScreen> {
       final authProvider = context.read<AuthProvider>();
       Widget? nextScreen;
 
-      if (authProvider.authNavigationStatus.isHome) {
+      if (authProvider.authNavigationStatus.isClinicSelection) {
+        nextScreen = const ClinicSelectionScreen();
+      } else if (authProvider.authNavigationStatus.isHome) {
         final userName =
             supabase.auth.currentSession?.user.userMetadata?['full_name'];
         nextScreen = HomeScreen(userName: userName ?? 'User');
@@ -111,6 +115,8 @@ class _AuthScreenState extends State<AuthScreen> {
         nextScreen = const PersonalDetailsScreen();
       } else if(authProvider.authNavigationStatus.isAssessment) {
         nextScreen = const AssessmentsListScreen();
+      } else if(authProvider.authNavigationStatus.isPackageSelection) {
+        nextScreen = const PackageSelectionScreen();
       } else if(authProvider.authNavigationStatus.isInitialConsultation) {
         nextScreen = const ConsultationRequestScreen();
       } else if (authProvider.authNavigationStatus.isError) {

@@ -1,0 +1,40 @@
+# Vercel ignore file
+# Files and directories to exclude from Vercel deployments
+
+# Build artifacts (will be generated during build)
+build/
+.dart_tool/
+*.lock
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-*
+
+# OS files
+.DS_Store
+Thumbs.db
+*.log
+
+# Environment files (use Vercel environment variables instead)
+.env
+.env.local
+.env.*.local
+
+# Documentation
+*.md
+!README.md
+
+# Scripts
+*.ps1
+*.sh
+*.bat
+
+# Test files
+test/
+*.test.dart
+
+# Other app directories (only deploy the specific app)
+# This is handled by root directory setting in Vercel

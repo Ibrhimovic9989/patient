@@ -1,5 +1,25 @@
--- Create the patient table
-CREATE TABLE patient (
+-- Create the therapist table (must be created before patient since patient references it)
+CREATE TABLE IF NOT EXISTS therapist (
+    id UUID PRIMARY KEY REFERENCES auth.users(id),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    phone TEXT NOT NULL,
+    clinic_id UUID,
+    license TEXT,
+    approved BOOLEAN DEFAULT FALSE,
+    specialisation TEXT,
+    gender TEXT,
+    offered_therapies TEXT[],
+    age INT2,
+    regulatory_body TEXT,
+    start_availability_time TEXT,
+    end_availability_time TEXT,
+    license_number TEXT
+);
+
+-- Create the patient table (references therapist, so must come after)
+CREATE TABLE IF NOT EXISTS patient (
     id UUID PRIMARY KEY REFERENCES auth.users(id),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     patient_name TEXT NOT NULL,
@@ -16,28 +36,8 @@ CREATE TABLE patient (
     country TEXT
 );
 
--- Create the therapist table
-CREATE TABLE therapist (
-    id UUID PRIMARY KEY REFERENCES auth.users(id),
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    name TEXT NOT NULL,
-    email TEXT NOT NULL,
-    phone TEXT NOT NULL,
-    clinic_id UUID,
-    license TEXT,
-    approved BOOLEAN DEFAULT FALSE,
-    specialisation TEXT,
-    gender TEXT,
-    offered_therapies TEXT[],
-    age INT2,
-    regulatory_body TEXT,
-    start_availability_time TEXT,
-    end_availability_time TEXT,
-    license_number TEXT,
-);
-
 -- Create the package table
-CREATE TABLE package (
+CREATE TABLE IF NOT EXISTS package (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     name TEXT NOT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE package (
 );
 
 -- Create the session table
-CREATE TABLE session (
+CREATE TABLE IF NOT EXISTS session (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     timestamp TIMESTAMPTZ NOT NULL,
@@ -56,28 +56,19 @@ CREATE TABLE session (
     duration INT4,
     name TEXT,
     status TEXT NOT NULL CHECK (status IN ('accepted', 'declined', 'pending')) DEFAULT 'pending',
-    declined_reason TEXT,
+    declined_reason TEXT
 );
 
--- Create the therapy_goal table
-CREATE TABLE therapy_goal (
+-- Therapy Table (must be created before therapy_goal since it references it)
+CREATE TABLE IF NOT EXISTS therapy (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     created_at TIMESTAMPTZ DEFAULT NOW(),
-    performed_on TIMESTAMPTZ,
-    therapist_id UUID REFERENCES therapist(id), 
-    therapy_mode INT2,
-    duration INT4,
-    therapy_type INT2,
-    therapy_type_id UUID REFERENCES therapy_type(id),
-    goals JSONB,
-    observations JSONB,
-    regressions JSONB,
-    activities JSONB,
-    patient_id UUID REFERENCES patient(id)
+    name TEXT NOT NULL UNIQUE,
+    description TEXT
 );
 
 -- Create the assessments table
-CREATE TABLE assessments (
+CREATE TABLE IF NOT EXISTS assessments (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   name TEXT NOT NULL,
@@ -89,8 +80,7 @@ CREATE TABLE assessments (
 );
 
 -- Create the assessment_results table
-
-CREATE TABLE assessment_results (
+CREATE TABLE IF NOT EXISTS assessment_results (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   assessment_id UUID REFERENCES assessments(id),
@@ -99,16 +89,25 @@ CREATE TABLE assessment_results (
   result JSONB
 );
 
--- Therapy Table 
-CREATE TABLE therapy (
+-- Create the therapy_goal table (references therapist, patient, and therapy)
+CREATE TABLE IF NOT EXISTS therapy_goal (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     created_at TIMESTAMPTZ DEFAULT NOW(),
-    name TEXT NOT NULL UNIQUE,
-    description TEXT
+    performed_on TIMESTAMPTZ,
+    therapist_id UUID REFERENCES therapist(id), 
+    therapy_mode INT2,
+    duration INT4,
+    therapy_type INT2,
+    therapy_type_id UUID REFERENCES therapy(id),
+    goals JSONB,
+    observations JSONB,
+    regressions JSONB,
+    activities JSONB,
+    patient_id UUID REFERENCES patient(id)
 );
 
 -- Therapy Goals Master Table
-CREATE TABLE goal_master (
+CREATE TABLE IF NOT EXISTS goal_master (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     goal_text TEXT NOT NULL,
@@ -116,15 +115,15 @@ CREATE TABLE goal_master (
 );
 
 -- Observations Master Table
-CREATE TABLE observation_master (
+CREATE TABLE IF NOT EXISTS observation_master (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     observation_text TEXT NOT NULL,
-    applicable_therapies UUID[] NOT NULL,
+    applicable_therapies UUID[] NOT NULL
 );
 
 -- Regressions Master Table
-CREATE TABLE regression_master (
+CREATE TABLE IF NOT EXISTS regression_master (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     regression_text TEXT NOT NULL,
@@ -132,15 +131,15 @@ CREATE TABLE regression_master (
 );
 
 -- Activities Master Table
-CREATE TABLE activity_master (
+CREATE TABLE IF NOT EXISTS activity_master (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     activity_text TEXT NOT NULL,
-    applicable_therapies UUID[] NOT NULL,
+    applicable_therapies UUID[] NOT NULL
 );
 
 -- Daily Activities Table
-CREATE TABLE daily_activities (
+CREATE TABLE IF NOT EXISTS daily_activities (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     activity_name TEXT NOT NULL,
@@ -150,20 +149,25 @@ CREATE TABLE daily_activities (
     patient_id UUID REFERENCES patient(id),
     start_time TIMESTAMPTZ,
     end_time TIMESTAMPTZ,
-    days_of_week INT2[],
+    days_of_week INT2[]
 );
 
-CREATE TABLE daily_activity_logs (
+CREATE TABLE IF NOT EXISTS daily_activity_logs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     activity_id UUID REFERENCES daily_activities(id) ON DELETE CASCADE,
     date TIMESTAMPTZ NOT NULL,
-    activity_items JSONB NOT NULL
-    patient_id UUID REFERENCES patient(id) ON DELETE CASCADE,
+    activity_items JSONB NOT NULL,
+    patient_id UUID REFERENCES patient(id) ON DELETE CASCADE
 );
 
 -- Indexes on foreign keys for better performance
-CREATE INDEX idx_patient_therapist_id ON patient(therapist_id);
-CREATE INDEX idx_session_therapist_id ON session(therapist_id);
-CREATE INDEX idx_session_patient_id ON session(patient_id);
-CREATE INDEX idx_therapy_goal_therapist_id ON therapy_goal(therapist_id);
-CREATE INDEX idx_therapy_goal_patient_id ON therapy_goal(patient_id);
+CREATE INDEX IF NOT EXISTS idx_patient_therapist_id ON patient(therapist_id);
+CREATE INDEX IF NOT EXISTS idx_session_therapist_id ON session(therapist_id);
+CREATE INDEX IF NOT EXISTS idx_session_patient_id ON session(patient_id);
+CREATE INDEX IF NOT EXISTS idx_therapy_goal_therapist_id ON therapy_goal(therapist_id);
+CREATE INDEX IF NOT EXISTS idx_therapy_goal_patient_id ON therapy_goal(patient_id);
+
+-- Indexes for daily_activity_logs for better query performance
+CREATE INDEX IF NOT EXISTS idx_daily_activity_logs_date ON daily_activity_logs(date);
+CREATE INDEX IF NOT EXISTS idx_daily_activity_logs_activity_id ON daily_activity_logs(activity_id);
+CREATE INDEX IF NOT EXISTS idx_daily_activity_logs_patient_id ON daily_activity_logs(patient_id);

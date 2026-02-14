@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:patient/core/theme/theme.dart';
 import 'package:patient/presentation/activities/daily_activities_screen.dart';
 import 'package:patient/presentation/appointments/appointment_list_screen.dart';
@@ -9,6 +10,10 @@ import 'package:patient/presentation/operations/therapy_goals.dart';
 import 'package:patient/presentation/reports/report_screen.dart'; // Import the new widget
 import 'package:patient/presentation/notification/updates_screen.dart';
 import 'package:patient/presentation/games/games_screen.dart';
+import 'package:patient/presentation/milestones/development_milestones_screen.dart';
+import 'package:patient/provider/milestones_provider.dart';
+import 'package:patient/repository/supabase_patient_repository.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../gen/assets.gen.dart';
 
@@ -177,11 +182,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 const SizedBox(height: 15),
                 // Development Milestones Card
-                TherapyGoalCard(
-                  title: 'Development',
-                  subtitle: 'Milestones',
-                  illustration: Assets.illustrations.i9nMilestones,
-                  backgroundColor: Color(0xFFF5FAF4),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChangeNotifierProvider(
+                          create: (_) => MilestonesProvider(
+                            patientRepository: SupabasePatientRepository(
+                              supabaseClient: Supabase.instance.client,
+                            ),
+                          )..analyzeMilestones(),
+                          child: const DevelopmentMilestonesScreen(),
+                        ),
+                      ),
+                    );
+                  },
+                  child: TherapyGoalCard(
+                    title: 'Development',
+                    subtitle: 'Milestones',
+                    illustration: Assets.illustrations.i9nMilestones,
+                    backgroundColor: Color(0xFFF5FAF4),
+                  ),
                 ),
                 const SizedBox(height: 15),
                 // Games Card

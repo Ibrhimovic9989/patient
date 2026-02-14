@@ -1,0 +1,51 @@
+name: clinic
+description: "Clinic management app for NeuroTrack SaaS platform"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.6.0 <4.0.0'
+
+flutter_gen:
+  output: lib/gen/
+  line_length: 80
+  integrations:
+    image: true
+    flutter_svg: true
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management
+  provider: ^6.1.2
+
+  # Supabase
+  supabase_flutter: ^2.8.4
+
+  # Serialisation
+  dart_mappable: ^4.4.0
+
+  cupertino_icons: ^1.0.6
+  google_fonts: ^6.1.0
+  flutter_dotenv: ^5.2.1
+  intl: ^0.20.2
+  flutter_svg: ^2.0.17
+  country_picker: ^2.0.27
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  build_runner: ^2.4.15
+  dart_mappable_builder: ^4.4.0
+  flutter_lints: ^3.0.0
+  flutter_gen_runner:
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/icons/
+    - assets/illustrations/
+    - .env

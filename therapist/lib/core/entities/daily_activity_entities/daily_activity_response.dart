@@ -28,6 +28,10 @@ class DailyActivityResponse with DailyActivityResponseMappable {
   final String endTime;
   @MappableField(key: 'days_of_week')
   final List<String> daysOfWeek;
+  @MappableField(key: 'instructions')
+  final Map<String, String>? instructions;
+  @MappableField(key: 'reminder_settings')
+  final Map<String, dynamic>? reminderSettings;
 
   DailyActivityResponse({
     required this.id,
@@ -40,6 +44,8 @@ class DailyActivityResponse with DailyActivityResponseMappable {
     required this.startTime,
     required this.endTime,
     required this.daysOfWeek,
+    this.instructions,
+    this.reminderSettings,
   });
 
   DailyActivityResponseModel toModel() {
@@ -54,6 +60,8 @@ class DailyActivityResponse with DailyActivityResponseMappable {
       startTime: startTime,
       endTime: endTime,
       daysOfWeek: daysOfWeek,
+      instructions: instructions,
+      reminderSettings: reminderSettings,
     );
   }
 }

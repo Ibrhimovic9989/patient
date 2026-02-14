@@ -13,6 +13,16 @@ abstract interface class TherapyRepository {
 
   Future<ActionResult> getTherapyTypes();
 
+  /// Get therapy types for a patient's active package
+  /// 
+  /// Returns a list of therapy types that are in the patient's package
+  /// 
+  /// Throws an [ActionResultFailure] if an exception occurs
+  /// 
+  /// Returns an [ActionResultSuccess] if the operation is successful
+
+  Future<ActionResult> getTherapyTypesForPatient(String patientId);
+
   /// Add therapy goals
   /// 
   /// Returns a message if the operation is successful
@@ -134,4 +144,90 @@ abstract interface class TherapyRepository {
   /// Returns an [ActionResultSuccess] if the operation is successful
   
   Future<ActionResult> deleteDailyActivity(String activitySetId);
+
+  /// Get patient progress metrics
+  /// 
+  /// Returns progress metrics for a specific patient including goals achieved, observations count, regressions count
+  /// 
+  /// - **Parameters:**
+  ///   - `patientId`: The patient ID (required)
+  ///   - `startDate`: Optional start date for the range (defaults to 30 days ago)
+  ///   - `endDate`: Optional end date for the range (defaults to today)
+  /// 
+  /// - **Returns:**
+  ///   - [ActionResultSuccess] with progress metrics data
+  ///   - [ActionResultFailure] if an error occurs
+  Future<ActionResult> getPatientProgressMetrics(
+    String patientId, {
+    DateTime? startDate,
+    DateTime? endDate,
+  });
+
+  /// Get patient historical trends
+  /// 
+  /// Returns therapy goals data for a patient grouped by date for chart visualization
+  /// 
+  /// - **Parameters:**
+  ///   - `patientId`: The patient ID (required)
+  ///   - `startDate`: Start date for the range (required)
+  ///   - `endDate`: End date for the range (required)
+  /// 
+  /// - **Returns:**
+  ///   - [ActionResultSuccess] with historical trends data
+  ///   - [ActionResultFailure] if an error occurs
+  Future<ActionResult> getPatientHistoricalTrends(
+    String patientId, {
+    required DateTime startDate,
+    required DateTime endDate,
+  });
+
+  /// Get existing therapy goal for a specific date and therapy type
+  /// 
+  /// Returns the therapy goal if it exists
+  /// 
+  /// - **Parameters:**
+  ///   - `patientId`: The patient ID (required)
+  ///   - `date`: The date to check (required)
+  ///   - `therapyTypeId`: The therapy type ID (required)
+  /// 
+  /// - **Returns:**
+  ///   - [ActionResultSuccess] with therapy goal data if found
+  ///   - [ActionResultFailure] if not found or error occurs
+  Future<ActionResult> getExistingTherapyGoal(
+    String patientId, {
+    required DateTime date,
+    required String therapyTypeId,
+  });
+
+  /// Get patient activity completion status
+  /// 
+  /// Returns activity completion data for a patient including which activities are completed
+  /// 
+  /// - **Parameters:**
+  ///   - `patientId`: The patient ID (required)
+  ///   - `activitySetId`: Optional activity set ID to filter by specific set
+  ///   - `startDate`: Optional start date for date range
+  ///   - `endDate`: Optional end date for date range
+  /// 
+  /// - **Returns:**
+  ///   - [ActionResultSuccess] with activity completion data
+  ///   - [ActionResultFailure] if an error occurs
+  Future<ActionResult> getPatientActivityCompletion(
+    String patientId, {
+    String? activitySetId,
+    DateTime? startDate,
+    DateTime? endDate,
+  });
+
+  /// Analyze milestones using AI
+  /// 
+  /// Analyzes therapy goals and daily activities to generate milestone insights
+  /// 
+  /// - **Parameters:**
+  ///   - `patientId`: The patient ID (required)
+  /// 
+  /// - **Returns:**
+  ///   - [ActionResultSuccess] with milestone analysis data
+  ///   - [ActionResultFailure] if an error occurs
+  Future<ActionResult> analyzeMilestones(String patientId);
 }

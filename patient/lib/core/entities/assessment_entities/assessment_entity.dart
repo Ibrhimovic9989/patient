@@ -27,7 +27,7 @@ class AssessmentEntity with AssessmentEntityMappable {
   final int cutoffScore;
 
   @MappableField(key: 'image_url')
-  final String imageUrl;
+  final String? imageUrl;
 
   @MappableField(key: 'questions')
   final List<AssessmentQuestionEntity> questions;
@@ -39,7 +39,7 @@ class AssessmentEntity with AssessmentEntityMappable {
     required this.description,
     required this.category,
     required this.cutoffScore,
-    required this.imageUrl,
+    this.imageUrl,
     required this.questions,
   });
 
@@ -51,7 +51,7 @@ class AssessmentEntity with AssessmentEntityMappable {
       description: description,
       category: category,
       cutoffScore: cutoffScore,
-      imageUrl: imageUrl,
+      imageUrl: imageUrl ?? '',
       questions: questions.map((e) => e.toModel()).toList(),
     );
   }

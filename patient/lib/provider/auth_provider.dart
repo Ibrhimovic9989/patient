@@ -1,9 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:patient/core/repository/auth/auth.dart';
 import 'package:patient/core/utils/utils.dart';
 import 'package:patient/model/auth_models/auth_model.dart';
@@ -16,17 +12,21 @@ import '../core/result/result.dart';
 
 enum AuthNavigationStatus {
   unknown,
+  clinicSelection,
   home,
   personalDetails,
   assessment,
+  packageSelection,
   initialConsultation,
   error,
 }
 extension AuthNavigationStatusX on AuthNavigationStatus {
   bool get isUnknown => this == AuthNavigationStatus.unknown;
+  bool get isClinicSelection => this == AuthNavigationStatus.clinicSelection;
   bool get isHome => this == AuthNavigationStatus.home;
   bool get isPersonalDetails => this == AuthNavigationStatus.personalDetails;
   bool get isAssessment => this == AuthNavigationStatus.assessment;
+  bool get isPackageSelection => this == AuthNavigationStatus.packageSelection;
   bool get isInitialConsultation => this == AuthNavigationStatus.initialConsultation;
   bool get isError => this == AuthNavigationStatus.error;
 }
@@ -71,51 +71,30 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> signInWithGoogle() async {
     try {
-      if (kIsWeb) {
-        await _handleWebSignIn();
-      } else {
-        await _handleMobileSignIn();
-      }
+      // Use web view OAuth for both web and mobile
+      await _handleOAuthSignIn();
     } catch (error) {
       throw Exception('Sign in failed: $error');
     }
   }
 
-  Future<void> _handleWebSignIn() async {
-    final supabaseUrl = dotenv.env['SUPABASE_URL'] ??
-        (throw Exception("Supabase URL not found in .env"));
-
+  Future<void> _handleOAuthSignIn() async {
+    // Get current app URL for redirect
+    String currentUrl;
+    if (kIsWeb) {
+      // Use Uri.base for web (works without dart:html)
+      currentUrl = Uri.base.toString().split('?').first; // Remove query params
+    } else {
+      // For mobile, use a deep link URL scheme
+      // This should match your app's URL scheme configured in AndroidManifest.xml and Info.plist
+      // Supabase will handle the redirect automatically
+      currentUrl = 'com.neurotrack.patient://login-callback';
+    }
+    
     await supabase.auth.signInWithOAuth(
       OAuthProvider.google,
-      redirectTo: "$supabaseUrl/auth/v1/callback",
+      redirectTo: currentUrl,
       authScreenLaunchMode: LaunchMode.platformDefault,
-    );
-  }
-
-  Future<void> _handleMobileSignIn() async {
-    final webClientId = dotenv.env['GOOGLE_WEB_CLIENT_ID'] ??
-        (throw Exception("WEB_CLIENT_ID not found in .env"));
-    final iosClientId = dotenv.env['GOOGLE_IOS_CLIENT_ID'];
-    
-    final GoogleSignIn googleSignIn = GoogleSignIn(
-      clientId: Platform.isIOS ? iosClientId : null,
-      serverClientId: webClientId,
-      scopes: ['email', 'profile'],
-    );
-
-    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-    if (googleUser == null) throw 'Sign in cancelled';
-
-    final GoogleSignInAuthentication googleAuth = 
-        await googleUser.authentication;
-
-    if (googleAuth.idToken == null) throw 'No ID Token found';
-    if (googleAuth.accessToken == null) throw 'No Access Token found';
-
-    await supabase.auth.signInWithIdToken(
-      provider: OAuthProvider.google,
-      idToken: googleAuth.idToken!,
-      accessToken: googleAuth.accessToken,
     );
   }
 
@@ -129,6 +108,7 @@ class AuthProvider extends ChangeNotifier {
     _authNavigationStatus = AuthNavigationStatus.unknown;
     notifyListeners();
 
+    // Step 1: Check if patient exists (onboarding)
     final result = await _authRepository.checkIfPatientExists();
     if (result is! ActionResultSuccess) {
       _setStatus(AuthNavigationStatus.error);
@@ -137,34 +117,71 @@ class AuthProvider extends ChangeNotifier {
 
     final bool patientExists = result.data as bool;
     if (!patientExists) {
+      // New patient - must complete onboarding first
       _setStatus(AuthNavigationStatus.personalDetails);
       return;
     }
 
+    // Step 2: Check if patient has a clinic assigned (REQUIRED)
+    final clinicCheckResult = await _checkIfPatientHasClinic();
+    if (clinicCheckResult == false) {
+      // Patient doesn't have a clinic, must select one
+      _setStatus(AuthNavigationStatus.clinicSelection);
+      return;
+    }
+
+    // Step 3: Check if patient has a package assigned (REQUIRED)
+    final packageResult = await _authRepository.checkIfPatientPackageExists();
+    if (packageResult is! ActionResultSuccess) {
+      _setStatus(AuthNavigationStatus.error);
+      return;
+    }
+
+    final bool packageExists = packageResult.data as bool;
+    if (!packageExists) {
+      // Patient must select a package
+      _setStatus(AuthNavigationStatus.packageSelection);
+      return;
+    }
+
+    // Step 4: Assessment is OPTIONAL - check but don't block
     final assessmentResult =
         await _authRepository.checkIfPatientAssessmentExists();
     if (assessmentResult is! ActionResultSuccess) {
-      _setStatus(AuthNavigationStatus.error);
+      // If assessment check fails, continue to main app
+      _setStatus(AuthNavigationStatus.home);
       return;
     }
 
     final bool assessmentExists = assessmentResult.data as bool;
     if (!assessmentExists) {
+      // Assessment is optional - show it but allow skipping
+      // For now, we'll go to home, but assessment screen should allow skipping
       _setStatus(AuthNavigationStatus.assessment);
       return;
     }
 
-    final consultationResult =
-        await _authRepository.checkIfPatientConsultationExists();
-    if (consultationResult is! ActionResultSuccess) {
-      _setStatus(AuthNavigationStatus.error);
-      return;
-    }
+    // All required steps completed - go to main app
+    _setStatus(AuthNavigationStatus.home);
+  }
 
-    final bool consultationExists = consultationResult.data as bool;
-    _setStatus(consultationExists
-        ? AuthNavigationStatus.home
-        : AuthNavigationStatus.initialConsultation);
+  /// Check if the current patient has a clinic assigned
+  Future<bool> _checkIfPatientHasClinic() async {
+    try {
+      final userId = supabase.auth.currentUser?.id;
+      if (userId == null) return false;
+
+      final response = await supabase
+          .from('patient')
+          .select('clinic_id')
+          .eq('id', userId)
+          .maybeSingle();
+
+      return response != null && response['clinic_id'] != null;
+    } catch (e) {
+      // If error, assume no clinic (safer to show selection screen)
+      return false;
+    }
   }
 
   void _setStatus(AuthNavigationStatus status) {
@@ -192,14 +209,15 @@ class AuthProvider extends ChangeNotifier {
     _apiErrorMessage = '';
     notifyListeners();
     final ActionResult result = await _authRepository.getAllAvailableTherapist();
-      if(result is ActionResultSuccess) {
-        therapistList = result.data as List<TherapistModel>;
-        _apiStatus = ApiStatus.success;
-      } else {
-        _apiStatus = ApiStatus.failure;
-        _apiErrorMessage = result.errorMessage ?? 'An error occurred. Please try again.';
-        notifyListeners();
-      }
+    if(result is ActionResultSuccess) {
+      therapistList = result.data as List<TherapistModel>;
+      _apiStatus = ApiStatus.success;
+      notifyListeners();
+    } else {
+      _apiStatus = ApiStatus.failure;
+      _apiErrorMessage = result.errorMessage ?? 'An error occurred. Please try again.';
+      notifyListeners();
+    }
   }
 
   void getAvailableBookingSlotsForTherapist(
@@ -209,11 +227,16 @@ class AuthProvider extends ChangeNotifier {
     _availableBookingSlots = [];
     notifyListeners();
     final therapistData = therapistList.firstWhere((element) => element.id == therapistId);
+    
+    // Handle nullable availability times
+    final startTime = therapistData.startAvailabilityTime ?? '09:00';
+    final endTime = therapistData.endAvailabilityTime ?? '17:00';
+    
     final ActionResult result = await _authRepository.getAvailableBookingSlotsForTherapist(
       therapistId,
       date,
-      therapistData.startAvailabilityTime,
-      therapistData.endAvailabilityTime,
+      startTime,
+      endTime,
     );
       if(result is ActionResultSuccess) {
         _availableBookingSlots = result.data as List<String>;

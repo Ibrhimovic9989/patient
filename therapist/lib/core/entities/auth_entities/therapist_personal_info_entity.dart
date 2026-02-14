@@ -16,17 +16,17 @@ class TherapistPersonalInfoEntity with TherapistPersonalInfoEntityMappable {
   @MappableField(key: 'profession_name')
   final String professionName;
   @MappableField(key: 'regulatory_body')
-  final String regulatoryBody;
+  final String? regulatoryBody;
   @MappableField(key: 'license_number')
-  final String licenseNumber;
+  final String? licenseNumber;
   @MappableField(key: 'specializations')
   final String specialization;
   @MappableField(key: 'therapies')
   final List<String> therapies;
   @MappableField(key: 'start_availability_time')
-  final String startAvailabilityTime;
+  final String? startAvailabilityTime;
   @MappableField(key: 'end_availability_time')
-  final String endAvailabilityTime;
+  final String? endAvailabilityTime;
 
   const TherapistPersonalInfoEntity({
     required this.id,
@@ -35,11 +35,11 @@ class TherapistPersonalInfoEntity with TherapistPersonalInfoEntityMappable {
     required this.gender,
     required this.professionId,
     required this.professionName,
-    required this.regulatoryBody,
-    required this.licenseNumber,
+    this.regulatoryBody,
+    this.licenseNumber,
     required this.specialization,
     required this.therapies,
-    required this.startAvailabilityTime,
-    required this.endAvailabilityTime,
+    this.startAvailabilityTime,
+    this.endAvailabilityTime,
   });
 }

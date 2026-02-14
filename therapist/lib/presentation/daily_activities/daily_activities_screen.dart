@@ -6,6 +6,7 @@ import 'package:therapist/presentation/daily_activities/widgets/daily_activities
 import '../../core/common/widgets/primary_button.dart';
 import '../../provider/daily_activities_provider.dart';
 import 'add_activty_set_screen.dart';
+import 'activity_completion_screen.dart';
 
 class DailyActivitiesScreen extends StatefulWidget {
   const DailyActivitiesScreen({
@@ -57,6 +58,22 @@ class _DailyActivitiesScreenState extends State<DailyActivitiesScreen> {
             color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),
       ),
       centerTitle: true,
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.assessment, color: Colors.black),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ActivityCompletionScreen(
+                  patientId: widget.patientId,
+                ),
+              ),
+            );
+          },
+          tooltip: 'View All Activity Completions',
+        ),
+      ],
     );
   }
 
@@ -130,6 +147,15 @@ class _DailyActivitiesScreenState extends State<DailyActivitiesScreen> {
                                 activities: dailyActivity.activityList
                                     .map((e) => e.activity)
                                     .toList(),
+                                activityInstructions: () {
+                                  final instructionsMap = <String, String>{};
+                                  for (final activity in dailyActivity.activityList) {
+                                    if (activity.instructions != null && activity.instructions!.isNotEmpty) {
+                                      instructionsMap[activity.activity] = activity.instructions!;
+                                    }
+                                  }
+                                  return instructionsMap;
+                                }(),
                                 selectedWeekdays: () {
                                   final daysOfWeek = dailyActivity.daysOfWeek;
                                   final List<String> selectedDays = [];
@@ -140,6 +166,18 @@ class _DailyActivitiesScreenState extends State<DailyActivitiesScreen> {
                                   }
                                   return selectedDays;
                                 }(),
+                              ),
+                            ),
+                          );
+                        },
+                        onViewCompletion: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ActivityCompletionScreen(
+                                patientId: widget.patientId,
+                                activitySetId: dailyActivity.id,
+                                activitySetName: dailyActivity.activityName,
                               ),
                             ),
                           );

@@ -48,8 +48,28 @@ class _ConsultationRequestScreenState extends State<ConsultationRequestScreen> {
                       child: CircularProgressIndicator(),
                     );
                   } else if(authProvider.apiStatus.isFailure) {
-                    return const Center(
-                      child: Text('Error fetching data'),
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                          const SizedBox(height: 16),
+                          Text(
+                            authProvider.apiErrorMessage.isNotEmpty 
+                                ? authProvider.apiErrorMessage 
+                                : 'Error fetching data',
+                            style: const TextStyle(fontSize: 16, color: Colors.red),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              authProvider.getAllTherapist();
+                            },
+                            child: const Text('Retry'),
+                          ),
+                        ],
+                      ),
                     );
                   } else if(authProvider.therapistList.isEmpty) {
                     return const Center(

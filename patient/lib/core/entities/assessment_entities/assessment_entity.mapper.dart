@@ -38,9 +38,9 @@ class AssessmentEntityMapper extends ClassMapperBase<AssessmentEntity> {
   static int _$cutoffScore(AssessmentEntity v) => v.cutoffScore;
   static const Field<AssessmentEntity, int> _f$cutoffScore =
       Field('cutoffScore', _$cutoffScore, key: r'cutoff_score');
-  static String _$imageUrl(AssessmentEntity v) => v.imageUrl;
+  static String? _$imageUrl(AssessmentEntity v) => v.imageUrl;
   static const Field<AssessmentEntity, String> _f$imageUrl =
-      Field('imageUrl', _$imageUrl, key: r'image_url');
+      Field('imageUrl', _$imageUrl, key: r'image_url', opt: true);
   static List<AssessmentQuestionEntity> _$questions(AssessmentEntity v) =>
       v.questions;
   static const Field<AssessmentEntity, List<AssessmentQuestionEntity>>
@@ -94,8 +94,9 @@ mixin AssessmentEntityMappable {
   }
 
   AssessmentEntityCopyWith<AssessmentEntity, AssessmentEntity, AssessmentEntity>
-      get copyWith => _AssessmentEntityCopyWithImpl(
-          this as AssessmentEntity, $identity, $identity);
+      get copyWith =>
+          _AssessmentEntityCopyWithImpl<AssessmentEntity, AssessmentEntity>(
+              this as AssessmentEntity, $identity, $identity);
   @override
   String toString() {
     return AssessmentEntityMapper.ensureInitialized()
@@ -118,8 +119,8 @@ mixin AssessmentEntityMappable {
 extension AssessmentEntityValueCopy<$R, $Out>
     on ObjectCopyWith<$R, AssessmentEntity, $Out> {
   AssessmentEntityCopyWith<$R, AssessmentEntity, $Out>
-      get $asAssessmentEntity =>
-          $base.as((v, t, t2) => _AssessmentEntityCopyWithImpl(v, t, t2));
+      get $asAssessmentEntity => $base
+          .as((v, t, t2) => _AssessmentEntityCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class AssessmentEntityCopyWith<$R, $In extends AssessmentEntity, $Out>
@@ -167,7 +168,7 @@ class _AssessmentEntityCopyWithImpl<$R, $Out>
           String? description,
           String? category,
           int? cutoffScore,
-          String? imageUrl,
+          Object? imageUrl = $none,
           List<AssessmentQuestionEntity>? questions}) =>
       $apply(FieldCopyWithData({
         if (assessmentId != null) #assessmentId: assessmentId,
@@ -176,7 +177,7 @@ class _AssessmentEntityCopyWithImpl<$R, $Out>
         if (description != null) #description: description,
         if (category != null) #category: category,
         if (cutoffScore != null) #cutoffScore: cutoffScore,
-        if (imageUrl != null) #imageUrl: imageUrl,
+        if (imageUrl != $none) #imageUrl: imageUrl,
         if (questions != null) #questions: questions
       }));
   @override
@@ -193,5 +194,5 @@ class _AssessmentEntityCopyWithImpl<$R, $Out>
   @override
   AssessmentEntityCopyWith<$R2, AssessmentEntity, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _AssessmentEntityCopyWithImpl($value, $cast, t);
+      _AssessmentEntityCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

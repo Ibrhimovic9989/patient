@@ -6,7 +6,9 @@ import 'package:therapist/repository/supabase_therapy_repository.dart';
 
 import '../../core/repository/therapy/therapy_repository.dart';
 import '../../provider/daily_activities_provider.dart';
+import '../../provider/milestones_provider.dart';
 import '../daily_activities/daily_activities_screen.dart';
+import '../milestones/development_milestones_screen.dart';
 
 class TherapyHomeScreen extends StatelessWidget {
   const TherapyHomeScreen({super.key, required this.patientId, required this.name});
@@ -76,8 +78,18 @@ class TherapyHomeScreen extends StatelessWidget {
     ));
   }
 
-  void _navigateToDevelopmentMilestones (BuildContext context) {
-    // TODO: Implement navigation to Development Milestones screen
+  void _navigateToDevelopmentMilestones(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChangeNotifierProvider(
+          create: (_) => MilestonesProvider(
+            therapyRepository: SupabaseTherapyRepository(),
+          )..analyzeMilestones(patientId),
+          child: DevelopmentMilestonesScreen(patientId: patientId),
+        ),
+      ),
+    );
   }
 
   @override

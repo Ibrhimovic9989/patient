@@ -38,7 +38,7 @@ class AssessmentModel with AssessmentModelMappable {
     required this.category,
     required this.cutoffScore,
     required this.questions,
-    required this.imageUrl,
+    this.imageUrl = '',
   });
   
 }

@@ -104,8 +104,8 @@ mixin PersonalInfoEntityMappable {
 
   PersonalInfoEntityCopyWith<PersonalInfoEntity, PersonalInfoEntity,
           PersonalInfoEntity>
-      get copyWith => _PersonalInfoEntityCopyWithImpl(
-          this as PersonalInfoEntity, $identity, $identity);
+      get copyWith => _PersonalInfoEntityCopyWithImpl<PersonalInfoEntity,
+          PersonalInfoEntity>(this as PersonalInfoEntity, $identity, $identity);
   @override
   String toString() {
     return PersonalInfoEntityMapper.ensureInitialized()
@@ -128,8 +128,8 @@ mixin PersonalInfoEntityMappable {
 extension PersonalInfoEntityValueCopy<$R, $Out>
     on ObjectCopyWith<$R, PersonalInfoEntity, $Out> {
   PersonalInfoEntityCopyWith<$R, PersonalInfoEntity, $Out>
-      get $asPersonalInfoEntity =>
-          $base.as((v, t, t2) => _PersonalInfoEntityCopyWithImpl(v, t, t2));
+      get $asPersonalInfoEntity => $base.as(
+          (v, t, t2) => _PersonalInfoEntityCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class PersonalInfoEntityCopyWith<$R, $In extends PersonalInfoEntity,
@@ -198,5 +198,5 @@ class _PersonalInfoEntityCopyWithImpl<$R, $Out>
   @override
   PersonalInfoEntityCopyWith<$R2, PersonalInfoEntity, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _PersonalInfoEntityCopyWithImpl($value, $cast, t);
+      _PersonalInfoEntityCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

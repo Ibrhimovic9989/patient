@@ -3,8 +3,15 @@ import 'package:flutter/material.dart';
 
 class TherapistTimePicker extends StatefulWidget {
   final Function(TimeOfDay start, TimeOfDay end) onTimeSelected;
+  final String? initialStartTime;
+  final String? initialEndTime;
 
-  const TherapistTimePicker({super.key, required this.onTimeSelected});
+  const TherapistTimePicker({
+    super.key,
+    required this.onTimeSelected,
+    this.initialStartTime,
+    this.initialEndTime,
+  });
 
   @override
   _TherapistTimePickerState createState() => _TherapistTimePickerState();
@@ -14,6 +21,43 @@ class _TherapistTimePickerState extends State<TherapistTimePicker> {
   TimeOfDay? startTime;
   TimeOfDay? endTime;
   String? errorText;
+
+  @override
+  void initState() {
+    super.initState();
+    // Parse initial times if provided (format: "HH:MM AM/PM")
+    if (widget.initialStartTime != null) {
+      startTime = _parseTimeString(widget.initialStartTime!);
+    }
+    if (widget.initialEndTime != null) {
+      endTime = _parseTimeString(widget.initialEndTime!);
+    }
+  }
+
+  TimeOfDay? _parseTimeString(String timeStr) {
+    try {
+      // Format: "HH:MM AM" or "HH:MM PM"
+      final parts = timeStr.split(' ');
+      if (parts.length != 2) return null;
+      
+      final timeParts = parts[0].split(':');
+      if (timeParts.length != 2) return null;
+      
+      int hour = int.parse(timeParts[0]);
+      final minute = int.parse(timeParts[1]);
+      final period = parts[1].toUpperCase();
+      
+      if (period == 'PM' && hour != 12) {
+        hour += 12;
+      } else if (period == 'AM' && hour == 12) {
+        hour = 0;
+      }
+      
+      return TimeOfDay(hour: hour, minute: minute);
+    } catch (e) {
+      return null;
+    }
+  }
 
   Future<void> _selectTime(bool isStart) async {
     final TimeOfDay initialTime = TimeOfDay.now();

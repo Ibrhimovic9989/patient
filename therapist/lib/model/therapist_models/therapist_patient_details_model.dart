@@ -21,12 +21,26 @@ class TherapistPatientDetailsModel with TherapistPatientDetailsModelMappable {
   @MappableField(key: 'email')
   final String email;
 
+  // Package information
+  final String? packageName;
+  final String? packageId;
+  final DateTime? packageExpiresAt;
+  final String? packageStatus;
+  final List<String>? packageTherapyTypes;
+  final Map<String, Map<String, int>>? sessionUsage;
+
 
   TherapistPatientDetailsModel({
     required this.patientId,
     required this.patientName,
     required this.phoneNo,
     required this.email,
+    this.packageName,
+    this.packageId,
+    this.packageExpiresAt,
+    this.packageStatus,
+    this.packageTherapyTypes,
+    this.sessionUsage,
   });
 
 }

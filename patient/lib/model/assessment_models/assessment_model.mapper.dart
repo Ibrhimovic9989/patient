@@ -44,7 +44,7 @@ class AssessmentModelMapper extends ClassMapperBase<AssessmentModel> {
       _f$questions = Field('questions', _$questions);
   static String _$imageUrl(AssessmentModel v) => v.imageUrl;
   static const Field<AssessmentModel, String> _f$imageUrl =
-      Field('imageUrl', _$imageUrl, key: r'image_url');
+      Field('imageUrl', _$imageUrl, key: r'image_url', opt: true, def: '');
 
   @override
   final MappableFields<AssessmentModel> fields = const {
@@ -94,8 +94,9 @@ mixin AssessmentModelMappable {
   }
 
   AssessmentModelCopyWith<AssessmentModel, AssessmentModel, AssessmentModel>
-      get copyWith => _AssessmentModelCopyWithImpl(
-          this as AssessmentModel, $identity, $identity);
+      get copyWith =>
+          _AssessmentModelCopyWithImpl<AssessmentModel, AssessmentModel>(
+              this as AssessmentModel, $identity, $identity);
   @override
   String toString() {
     return AssessmentModelMapper.ensureInitialized()
@@ -118,7 +119,7 @@ mixin AssessmentModelMappable {
 extension AssessmentModelValueCopy<$R, $Out>
     on ObjectCopyWith<$R, AssessmentModel, $Out> {
   AssessmentModelCopyWith<$R, AssessmentModel, $Out> get $asAssessmentModel =>
-      $base.as((v, t, t2) => _AssessmentModelCopyWithImpl(v, t, t2));
+      $base.as((v, t, t2) => _AssessmentModelCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class AssessmentModelCopyWith<$R, $In extends AssessmentModel, $Out>
@@ -192,5 +193,5 @@ class _AssessmentModelCopyWithImpl<$R, $Out>
   @override
   AssessmentModelCopyWith<$R2, AssessmentModel, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _AssessmentModelCopyWithImpl($value, $cast, t);
+      _AssessmentModelCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

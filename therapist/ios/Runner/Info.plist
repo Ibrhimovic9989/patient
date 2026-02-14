@@ -59,6 +59,14 @@
 		<string>com.googleusercontent.apps.638199147766-26mtku4lfo6tpjjq5i9bhhg5smfkf4dq</string>
 		</array>
 	</dict>
+	<dict>
+		<key>CFBundleTypeRole</key>
+		<string>Editor</string>
+		<key>CFBundleURLSchemes</key>
+		<array>
+		<string>com.neurotrack.therapist</string>
+		</array>
+	</dict>
 	</array>
 </dict>
 </plist>

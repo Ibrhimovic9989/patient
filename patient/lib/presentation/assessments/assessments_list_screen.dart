@@ -47,11 +47,69 @@ class _AssessmentsListScreenState extends State<AssessmentsListScreen> {
               ),
               const SizedBox(height: 24),
               Consumer(builder: (context, provider, child) {
-                if (assessmentProvider.allAssessments.isEmpty) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
+                if (assessmentProvider.isLoading) {
+                  return const Expanded(
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   );
                 }
+                
+                if (assessmentProvider.errorMessage != null) {
+                  return Expanded(
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.error_outline, size: 48, color: Colors.red),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Error loading assessments',
+                            style: theme.textTheme.titleLarge,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            assessmentProvider.errorMessage ?? 'Unknown error',
+                            style: theme.textTheme.bodyMedium,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              assessmentProvider.fetchAllAssessments();
+                            },
+                            child: const Text('Retry'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+                
+                if (assessmentProvider.allAssessments.isEmpty) {
+                  return Expanded(
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.assessment_outlined, size: 48, color: Colors.grey),
+                          const SizedBox(height: 16),
+                          Text(
+                            'No assessments available',
+                            style: theme.textTheme.titleLarge,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Please seed the assessments table in Supabase',
+                            style: theme.textTheme.bodyMedium,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+                
                 return Expanded(
                   child: ListView.separated(
                     physics: const BouncingScrollPhysics(),

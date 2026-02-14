@@ -31,6 +31,12 @@ class TherapyGoalEntity with TherapyGoalEntityMappable {
   @MappableField(key: 'patient_id')
   final String? patientId;
 
+  @MappableField(key: 'session_notes')
+  final String? sessionNotes;
+
+  @MappableField(key: 'goal_achievement_status')
+  final Map<String, String>? goalAchievementStatus;
+
   TherapyGoalEntity({
     required this.performedOn,
     this.therapistId,
@@ -40,5 +46,7 @@ class TherapyGoalEntity with TherapyGoalEntityMappable {
     required this.regressions,
     required this.activities,
     this.patientId,
+    this.sessionNotes,
+    this.goalAchievementStatus,
   });
 }

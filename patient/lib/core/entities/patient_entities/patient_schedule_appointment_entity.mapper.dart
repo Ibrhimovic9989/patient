@@ -99,7 +99,9 @@ mixin PatientScheduleAppointmentEntityMappable {
 
   PatientScheduleAppointmentEntityCopyWith<PatientScheduleAppointmentEntity,
           PatientScheduleAppointmentEntity, PatientScheduleAppointmentEntity>
-      get copyWith => _PatientScheduleAppointmentEntityCopyWithImpl(
+      get copyWith => _PatientScheduleAppointmentEntityCopyWithImpl<
+              PatientScheduleAppointmentEntity,
+              PatientScheduleAppointmentEntity>(
           this as PatientScheduleAppointmentEntity, $identity, $identity);
   @override
   String toString() {
@@ -125,7 +127,7 @@ extension PatientScheduleAppointmentEntityValueCopy<$R, $Out>
   PatientScheduleAppointmentEntityCopyWith<$R, PatientScheduleAppointmentEntity,
           $Out>
       get $asPatientScheduleAppointmentEntity => $base.as((v, t, t2) =>
-          _PatientScheduleAppointmentEntityCopyWithImpl(v, t, t2));
+          _PatientScheduleAppointmentEntityCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class PatientScheduleAppointmentEntityCopyWith<
@@ -189,5 +191,6 @@ class _PatientScheduleAppointmentEntityCopyWithImpl<$R, $Out>
   PatientScheduleAppointmentEntityCopyWith<$R2,
       PatientScheduleAppointmentEntity, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _PatientScheduleAppointmentEntityCopyWithImpl($value, $cast, t);
+      _PatientScheduleAppointmentEntityCopyWithImpl<$R2, $Out2>(
+          $value, $cast, t);
 }

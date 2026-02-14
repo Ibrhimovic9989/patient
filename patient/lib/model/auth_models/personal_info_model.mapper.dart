@@ -103,8 +103,9 @@ mixin PersonalInfoModelMappable {
 
   PersonalInfoModelCopyWith<PersonalInfoModel, PersonalInfoModel,
           PersonalInfoModel>
-      get copyWith => _PersonalInfoModelCopyWithImpl(
-          this as PersonalInfoModel, $identity, $identity);
+      get copyWith =>
+          _PersonalInfoModelCopyWithImpl<PersonalInfoModel, PersonalInfoModel>(
+              this as PersonalInfoModel, $identity, $identity);
   @override
   String toString() {
     return PersonalInfoModelMapper.ensureInitialized()
@@ -127,8 +128,8 @@ mixin PersonalInfoModelMappable {
 extension PersonalInfoModelValueCopy<$R, $Out>
     on ObjectCopyWith<$R, PersonalInfoModel, $Out> {
   PersonalInfoModelCopyWith<$R, PersonalInfoModel, $Out>
-      get $asPersonalInfoModel =>
-          $base.as((v, t, t2) => _PersonalInfoModelCopyWithImpl(v, t, t2));
+      get $asPersonalInfoModel => $base
+          .as((v, t, t2) => _PersonalInfoModelCopyWithImpl<$R, $Out>(v, t, t2));
 }
 
 abstract class PersonalInfoModelCopyWith<$R, $In extends PersonalInfoModel,
@@ -197,5 +198,5 @@ class _PersonalInfoModelCopyWithImpl<$R, $Out>
   @override
   PersonalInfoModelCopyWith<$R2, PersonalInfoModel, $Out2> $chain<$R2, $Out2>(
           Then<$Out2, $R2> t) =>
-      _PersonalInfoModelCopyWithImpl($value, $cast, t);
+      _PersonalInfoModelCopyWithImpl<$R2, $Out2>($value, $cast, t);
 }

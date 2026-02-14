@@ -47,6 +47,25 @@ class TherapistPatientDetailsEntity with TherapistPatientDetailsEntityMappable {
   @MappableField(key: 'country')
   final String? country;
 
+  // Package information
+  @MappableField(key: 'package_name')
+  final String? packageName;
+
+  @MappableField(key: 'package_id')
+  final String? packageId;
+
+  @MappableField(key: 'package_expires_at')
+  final DateTime? packageExpiresAt;
+
+  @MappableField(key: 'package_status')
+  final String? packageStatus;
+
+  @MappableField(key: 'package_therapy_types')
+  final List<String>? packageTherapyTypes;
+
+  @MappableField(key: 'session_usage')
+  final Map<String, Map<String, int>>? sessionUsage;
+
 
   TherapistPatientDetailsEntity({
     required this.patientId,
@@ -62,6 +81,12 @@ class TherapistPatientDetailsEntity with TherapistPatientDetailsEntityMappable {
     this.therapistId,
     this.gender,
     this.country,
+    this.packageName,
+    this.packageId,
+    this.packageExpiresAt,
+    this.packageStatus,
+    this.packageTherapyTypes,
+    this.sessionUsage,
   });
 
 
