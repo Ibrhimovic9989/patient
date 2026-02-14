@@ -16,8 +16,8 @@
    - **Project Name**: `neurotrack-patient`
    - **Root Directory**: `patient`
    - **Framework**: Other
-   - **Build Command**: (auto-detected from `vercel.json`)
-   - **Output Directory**: `build/web`
+   - **Build Command**: `bash build.sh` (auto-detected from `vercel.json`)
+   - **Output Directory**: `build/web` (auto-detected from `vercel.json`)
 4. Add Environment Variables:
    - `SUPABASE_URL`
    - `SUPABASE_ANON_KEY`

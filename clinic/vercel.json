@@ -1,5 +1,5 @@
 {
-  "buildCommand": "bash -c 'if ! command -v flutter &> /dev/null; then curl -L https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.6.0-stable.tar.xz | tar xJ -C /tmp && export PATH=\"$PATH:/tmp/flutter/bin\"; fi && cd .. && echo \"SUPABASE_URL=$SUPABASE_URL\" > clinic/web/.env && echo \"SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY\" >> clinic/web/.env && echo \"GEMINI_API_KEY=$GEMINI_API_KEY\" >> clinic/web/.env && flutter pub get && flutter build web --release --web-renderer canvaskit --base-href /'",
+  "buildCommand": "bash build.sh",
   "outputDirectory": "build/web",
   "devCommand": "flutter run -d chrome --web-port=50003",
   "installCommand": "flutter pub get",

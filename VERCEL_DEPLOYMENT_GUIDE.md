@@ -34,9 +34,9 @@ Each app is deployed as a separate Vercel project:
    - **Project Name**: `neurotrack-patient` (or your preferred name)
    - **Root Directory**: `patient`
    - **Framework Preset**: Other
-   - **Build Command**: `cd .. && flutter build web --release --web-renderer canvaskit`
-   - **Output Directory**: `build/web`
-   - **Install Command**: `flutter pub get`
+   - **Build Command**: `bash build.sh` (auto-detected from `vercel.json`)
+   - **Output Directory**: `build/web` (auto-detected from `vercel.json`)
+   - **Install Command**: `flutter pub get` (optional, handled in build script)
 5. **Environment Variables**:
    - Click "Environment Variables"
    - Add the following:
@@ -178,14 +178,16 @@ Each app has a `vercel.json` file with:
 
 Create a `Dockerfile` in each app directory or use Vercel's build settings:
 
-**Option 1: Install Flutter in Build Command**
+**Option 1: Use Build Script (Already Configured)**
 
-Update `vercel.json` build command:
+The `build.sh` script in each app directory handles Flutter installation automatically. The `vercel.json` uses:
 ```json
 {
-  "buildCommand": "bash -c 'curl -L https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.6.0-stable.tar.xz | tar xJ && export PATH=\"$PATH:$PWD/flutter/bin\" && cd .. && flutter build web --release --web-renderer canvaskit'"
+  "buildCommand": "bash build.sh"
 }
 ```
+
+This keeps the command under the 256 character limit and is easier to maintain.
 
 **Option 2: Use Vercel Build Settings**
 

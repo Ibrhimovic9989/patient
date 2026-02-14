@@ -89,13 +89,15 @@ vercel --prod
 
 ### Build Command Details
 
-The build command:
+Each app has a `build.sh` script that:
 1. Checks if Flutter is installed
 2. If not, downloads and installs Flutter 3.6.0
-3. Creates `.env` file from Vercel environment variables
+3. Creates `.env` file in `web/` directory from Vercel environment variables
 4. Runs `flutter pub get`
 5. Builds web app with CanvasKit renderer
 6. Outputs to `build/web/`
+
+The `vercel.json` uses a short command: `bash build.sh` (well under the 256 character limit)
 
 ### Environment Variables
 
