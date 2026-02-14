@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
@@ -167,13 +168,9 @@ class _ClinicOnboardingScreenState extends State<ClinicOnboardingScreen> {
         'is_active': false, // Pending admin approval
       };
 
-      final { error } = await supabase
+      await supabase
           .from('clinic')
           .insert(clinicData);
-
-      if (error != null) {
-        throw Exception(error.message);
-      }
 
       if (mounted) {
         // Show success message
