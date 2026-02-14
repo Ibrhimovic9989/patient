@@ -13,10 +13,10 @@ if ! command -v flutter &> /dev/null; then
   flutter doctor
 fi
 
-# Create .env file in web directory from Vercel environment variables
-echo "SUPABASE_URL=$SUPABASE_URL" > web/.env
-echo "SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY" >> web/.env
-echo "GEMINI_API_KEY=$GEMINI_API_KEY" >> web/.env
+# Create .env file in root directory from Vercel environment variables
+echo "SUPABASE_URL=$SUPABASE_URL" > .env
+echo "SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY" >> .env
+echo "GEMINI_API_KEY=$GEMINI_API_KEY" >> .env
 
 # Get dependencies
 flutter pub get
