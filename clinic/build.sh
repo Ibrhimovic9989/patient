@@ -4,8 +4,13 @@ set -e
 # Install Flutter if not available
 if ! command -v flutter &> /dev/null; then
   echo "Installing Flutter..."
-  curl -L https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.6.0-stable.tar.xz | tar xJ -C /tmp
+  # Use git clone as it's more reliable than downloading archives
+  if [ ! -d /tmp/flutter ]; then
+    git clone --depth 1 --branch stable https://github.com/flutter/flutter.git /tmp/flutter
+  fi
   export PATH="$PATH:/tmp/flutter/bin"
+  flutter --version
+  flutter doctor
 fi
 
 # Create .env file in web directory from Vercel environment variables
