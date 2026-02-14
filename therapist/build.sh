@@ -22,4 +22,4 @@ echo "GEMINI_API_KEY=$GEMINI_API_KEY" >> web/.env
 flutter pub get
 
 # Build web app
-flutter build web --release --web-renderer canvaskit --base-href /
+flutter build web --release --base-href /

@@ -154,7 +154,7 @@ vercel env add VARIABLE_NAME
 ## Build Configuration
 
 Each app has a `vercel.json` file with:
-- **Build Command**: `cd .. && flutter build web --release --web-renderer canvaskit`
+- **Build Command**: `chmod +x build.sh && bash build.sh` (runs `flutter build web --release --base-href /`)
 - **Output Directory**: `build/web`
 - **SPA Routing**: All routes rewrite to `index.html`
 - **Security Headers**: XSS protection, frame options, etc.
@@ -246,7 +246,7 @@ curl -L https://storage.googleapis.com/flutter_infra_release/releases/stable/lin
 export PATH="$PATH:$PWD/flutter/bin"
 
 # Then build
-cd .. && flutter build web --release --web-renderer canvaskit
+cd .. && flutter build web --release --base-href /
 ```
 
 ### Build Fails: "Missing .env file"
