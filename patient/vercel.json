@@ -2,7 +2,6 @@
   "buildCommand": "bash build.sh",
   "outputDirectory": "build/web",
   "devCommand": "flutter run -d chrome --web-port=50001",
-  "installCommand": "flutter pub get",
   "framework": null,
   "rewrites": [
     {
