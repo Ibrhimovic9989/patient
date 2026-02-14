@@ -1,5 +1,5 @@
 {
-  "buildCommand": "bash build.sh",
+  "buildCommand": "chmod +x build.sh && bash build.sh",
   "outputDirectory": "build/web",
   "devCommand": "flutter run -d chrome --web-port=50001",
   "framework": null,

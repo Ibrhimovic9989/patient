@@ -27,9 +27,10 @@ Thumbs.db
 *.md
 !README.md
 
-# Scripts
+# Scripts (but allow build.sh scripts)
 *.ps1
 *.sh
+!**/build.sh
 *.bat
 
 # Test files
